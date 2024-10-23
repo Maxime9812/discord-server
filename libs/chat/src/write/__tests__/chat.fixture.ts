@@ -1,9 +1,17 @@
-import { Chatter, DeterministicDateProvider, Message } from '../domain'
+import {
+    Chatter,
+    DeterministicDateProvider,
+    FriendRequest,
+    Message,
+} from '../domain'
+import { InMemoryFriendRequestRepository } from '../infra'
 import { InMemoryChatterRepository } from '../infra/gateways/in-memory-chatter.repository'
 import { InMemoryMessageRepository } from '../infra/gateways/in-memory-message.repository'
 import {
     SendDirectMessageHandler,
     SendDirectMessagePayload,
+    SendFriendRequestHandler,
+    SendFriendRequestPaylaod,
 } from '../use-cases'
 import { DeleteDirectMessagePayload } from '../use-cases/delete-direct-message/delete-direct-message.command'
 import { DeleteDirectMessageHandler } from '../use-cases/delete-direct-message/delete-direct-message.handler'
@@ -11,6 +19,7 @@ import { DeleteDirectMessageHandler } from '../use-cases/delete-direct-message/d
 export const createChatFixture = () => {
     const messageRepository = new InMemoryMessageRepository()
     const chatterRepository = new InMemoryChatterRepository()
+    const friendRequestRepository = new InMemoryFriendRequestRepository()
     const dateProvider = new DeterministicDateProvider()
     const sendDirectMessageHandler = new SendDirectMessageHandler(
         messageRepository,
@@ -20,6 +29,11 @@ export const createChatFixture = () => {
     const deleteDirectMessageHandler = new DeleteDirectMessageHandler(
         messageRepository,
         chatterRepository
+    )
+    const sendFriendRequestHandler = new SendFriendRequestHandler(
+        friendRequestRepository,
+        chatterRepository,
+        dateProvider
     )
     let error: Error
 
@@ -47,6 +61,13 @@ export const createChatFixture = () => {
                 error = e
             }
         },
+        async whenSendFriendRequest(command: SendFriendRequestPaylaod) {
+            try {
+                await sendFriendRequestHandler.handle(command)
+            } catch (e) {
+                error = e
+            }
+        },
         thenMessagesShouldBe(messages: Message[]) {
             expect(messageRepository.getAll()).toEqual(
                 messages.map((m) => m.snapshot)
@@ -54,6 +75,11 @@ export const createChatFixture = () => {
         },
         thenErrorShouldBe(expectedError: Error) {
             expect(error).toEqual(expectedError)
+        },
+        thenFriendRequestsShouldBe(friendRequests: FriendRequest[]) {
+            expect(friendRequestRepository.getAll()).toEqual(
+                friendRequests.map((r) => r.snapshot)
+            )
         },
     }
 }

@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common'
 import {
     SendDirectMessageCommand,
     SendDirectMessageHandler,
+    SendFriendRequestCommand,
+    SendFriendRequestHandler,
 } from '../../use-cases'
 import { CommandBus } from '@app/shared'
 import { ChatterRepository, MessageRepository } from '../../gateways'
@@ -41,13 +43,20 @@ import { DeleteDirectMessageCommand } from '../../use-cases/delete-direct-messag
                 )
             },
         },
+        {
+            provide: SendFriendRequestHandler,
+            useFactory() {
+                return new SendFriendRequestHandler()
+            },
+        },
     ],
 })
 export class ChatWriteUsecasesModule {
     constructor(
         commandBus: CommandBus,
         sendDirectMessageHandler: SendDirectMessageHandler,
-        deleteDirectMessageHandler: DeleteDirectMessageHandler
+        deleteDirectMessageHandler: DeleteDirectMessageHandler,
+        sendFriendRequestHandler: SendFriendRequestHandler
     ) {
         commandBus
             .registerHandler(SendDirectMessageCommand, sendDirectMessageHandler)
@@ -55,5 +64,6 @@ export class ChatWriteUsecasesModule {
                 DeleteDirectMessageCommand,
                 deleteDirectMessageHandler
             )
+            .registerHandler(SendFriendRequestCommand, sendFriendRequestHandler)
     }
 }

@@ -1,3 +1,4 @@
+import { FriendRequest } from '../friend-request'
 import { Message } from '../message'
 import { ChatterNotFriendWithReceiverError } from './chatter.errors'
 
@@ -42,6 +43,18 @@ export class Chatter {
             receiverId: receiver.id,
             emitterId: this.id,
             content,
+            currentDate,
+        })
+    }
+
+    requestToBeFriendWith(
+        receiver: Chatter,
+        { id, currentDate }: { id: string; currentDate: Date }
+    ) {
+        return FriendRequest.request({
+            id,
+            senderId: this.id,
+            receiverId: receiver.id,
             currentDate,
         })
     }
