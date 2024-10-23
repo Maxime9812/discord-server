@@ -7,6 +7,7 @@ export const messageBuilder = (
         receiverId: 'receiver-id',
         content: 'message-content',
         sendAt: new Date('2024-10-23'),
+        deleted: false,
     }
 ) => ({
     withId(id: string) {
@@ -24,8 +25,10 @@ export const messageBuilder = (
     sendAt(date: Date) {
         return messageBuilder({ ...snapshot, sendAt: date })
     },
+    deleted() {
+        return messageBuilder({ ...snapshot, deleted: true })
+    },
     build() {
         return Message.fromSnapshot(snapshot)
     },
 })
-

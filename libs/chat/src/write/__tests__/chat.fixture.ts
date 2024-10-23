@@ -1,15 +1,12 @@
-import {
-    Chatter,
-    DeterministicDateProvider,
-    Message,
-    MessageSnapshot,
-} from '../domain'
+import { Chatter, DeterministicDateProvider, Message } from '../domain'
 import { InMemoryChatterRepository } from '../infra/gateways/in-memory-chatter.repository'
 import { InMemoryMessageRepository } from '../infra/gateways/in-memory-message.repository'
 import {
     SendDirectMessageHandler,
     SendDirectMessagePayload,
 } from '../use-cases'
+import { DeleteDirectMessagePayload } from '../use-cases/delete-direct-message/delete-direct-message.command'
+import { DeleteDirectMessageHandler } from '../use-cases/delete-direct-message/delete-direct-message.handler'
 
 export const createChatFixture = () => {
     const messageRepository = new InMemoryMessageRepository()
@@ -20,6 +17,10 @@ export const createChatFixture = () => {
         chatterRepository,
         dateProvider
     )
+    const deleteDirectMessageHandler = new DeleteDirectMessageHandler(
+        messageRepository,
+        chatterRepository
+    )
     let error: Error
 
     return {
@@ -29,9 +30,19 @@ export const createChatFixture = () => {
         givenChatters(chatters: Chatter[]) {
             chatterRepository.givenChatters(chatters)
         },
+        givenMessages(messages: Message[]) {
+            messageRepository.givenMessages(messages)
+        },
         async whenSendDirectMessage(command: SendDirectMessagePayload) {
             try {
                 await sendDirectMessageHandler.handle(command)
+            } catch (e) {
+                error = e
+            }
+        },
+        async whenDeleteDirectMessage(command: DeleteDirectMessagePayload) {
+            try {
+                await deleteDirectMessageHandler.handle(command)
             } catch (e) {
                 error = e
             }

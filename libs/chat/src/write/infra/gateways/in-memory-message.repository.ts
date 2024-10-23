@@ -16,4 +16,10 @@ export class InMemoryMessageRepository implements MessageRepository {
     getAll() {
         return Array.from(this.messages.values())
     }
+
+    givenMessages(messages: Message[]) {
+        messages.forEach((message) => {
+            this.messages.set(message.id, message.snapshot)
+        })
+    }
 }

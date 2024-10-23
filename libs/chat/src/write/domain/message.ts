@@ -1,3 +1,5 @@
+import { DomainError } from '@app/shared'
+import { Chatter } from './chatter'
 import { MessageContent } from './message-content'
 
 type MessageProps = {
@@ -6,6 +8,7 @@ type MessageProps = {
     emitterId: string
     content: MessageContent
     sendAt: Date
+    deleted: boolean
 }
 
 type WriteMessage = {
@@ -17,6 +20,18 @@ type WriteMessage = {
 }
 
 export type MessageSnapshot = Message['snapshot']
+
+export class MessageWasNotSentByChatterError extends DomainError {
+    constructor() {
+        super('Chatter is not the emitter of this message')
+    }
+}
+
+export class MessageAlreadyDeletedError extends DomainError {
+    constructor() {
+        super('Message is already deleted')
+    }
+}
 
 export class Message {
     private constructor(private props: MessageProps) {}
@@ -32,7 +47,18 @@ export class Message {
             emitterId: this.props.emitterId,
             content: this.props.content.value,
             sendAt: this.props.sendAt,
+            deleted: this.props.deleted,
         }
+    }
+
+    delete(chatter: Chatter) {
+        if (this.props.deleted) {
+            throw new MessageAlreadyDeletedError()
+        }
+        if (chatter.id != this.props.emitterId) {
+            throw new MessageWasNotSentByChatterError()
+        }
+        this.props.deleted = true
     }
 
     static fromSnapshot(snapshot: MessageSnapshot) {
@@ -42,6 +68,7 @@ export class Message {
             emitterId: snapshot.emitterId,
             content: MessageContent.from(snapshot.content),
             sendAt: snapshot.sendAt,
+            deleted: snapshot.deleted,
         })
     }
 
@@ -58,6 +85,7 @@ export class Message {
             emitterId,
             content: MessageContent.from(content),
             sendAt: currentDate,
+            deleted: false,
         })
     }
 }
