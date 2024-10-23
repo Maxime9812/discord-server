@@ -5,6 +5,7 @@ import {
     MessageAlreadyDeletedError,
     MessageWasNotSentByChatterError,
 } from '../../domain'
+import { ChatterNotFoundError } from '../send-direct-message'
 import { MessageNotFoundError } from './delete-direct-message.errors'
 
 const EMITTER = chatterBuilder().withId('1234').build()
@@ -69,5 +70,17 @@ describe('Feature: Delete Direct Message', () => {
         })
 
         fixture.thenErrorShouldBe(new MessageNotFoundError('1'))
+    })
+
+    test('Can NOT delete a message when chatter does not exist', async () => {
+        const message = messageSendBuilder.build()
+        fixture.givenMessages([message])
+
+        await fixture.whenDeleteDirectMessage({
+            id: message.id,
+            chatterId: '1',
+        })
+
+        fixture.thenErrorShouldBe(new ChatterNotFoundError('1'))
     })
 })
