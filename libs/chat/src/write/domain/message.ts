@@ -1,8 +1,10 @@
+import { MessageContent } from './message-content'
+
 type MessageProps = {
     id: string
     receiverId: string
     emitterId: string
-    message: string
+    content: MessageContent
     sendAt: Date
 }
 
@@ -10,7 +12,7 @@ type WriteMessage = {
     id: string
     receiverId: string
     emitterId: string
-    message: string
+    content: string
     currentDate: Date
 }
 
@@ -28,27 +30,33 @@ export class Message {
             id: this.props.id,
             receiverId: this.props.receiverId,
             emitterId: this.props.emitterId,
-            message: this.props.message,
+            content: this.props.content.value,
             sendAt: this.props.sendAt,
         }
     }
 
     static fromSnapshot(snapshot: MessageSnapshot) {
-        return new Message(snapshot)
+        return new Message({
+            id: snapshot.id,
+            receiverId: snapshot.receiverId,
+            emitterId: snapshot.emitterId,
+            content: MessageContent.from(snapshot.content),
+            sendAt: snapshot.sendAt,
+        })
     }
 
     static create({
         id,
         receiverId,
         emitterId,
-        message,
+        content,
         currentDate,
     }: WriteMessage) {
         return new Message({
             id,
             receiverId,
             emitterId,
-            message,
+            content: MessageContent.from(content),
             sendAt: currentDate,
         })
     }

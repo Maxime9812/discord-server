@@ -15,6 +15,7 @@ export const createChatFixture = () => {
         chatterRepository,
         dateProvider
     )
+    let error: Error
 
     return {
         givenNowIs(now: Date) {
@@ -23,11 +24,18 @@ export const createChatFixture = () => {
         givenChatters(chatters: Chatter[]) {
             chatterRepository.givenChatters(chatters)
         },
-        whenSendDirectMessage(command: SendDirectMessagePayload) {
-            return sendDirectMessageHandler.handle(command)
+        async whenSendDirectMessage(command: SendDirectMessagePayload) {
+            try {
+                await sendDirectMessageHandler.handle(command)
+            } catch (e) {
+                error = e
+            }
         },
         thenMessagesShouldBe(messages: MessageSnapshot[]) {
             expect(messageRepository.getAll()).toEqual(messages)
+        },
+        thenErrorShouldBe(expectedError: Error) {
+            expect(error).toEqual(expectedError)
         },
     }
 }

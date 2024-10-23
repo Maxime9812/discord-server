@@ -16,12 +16,14 @@ export class SendDirectMessageHandler
     ) {}
 
     async handle(command: SendDirectMessagePayload): Promise<void> {
-        const chatter = await this.chatterRepository.byId(command.emitterId)
-        const receiver = await this.chatterRepository.byId(command.receiverId)
+        const [chatter, receiver] = await Promise.all([
+            this.chatterRepository.byId(command.emitterId),
+            this.chatterRepository.byId(command.receiverId),
+        ])
 
         const message = chatter.write(receiver, {
             id: command.messageId,
-            message: command.message,
+            content: command.content,
             currentDate: this.dateProvider.getNow(),
         })
 
