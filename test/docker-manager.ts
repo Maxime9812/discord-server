@@ -4,7 +4,7 @@ import {
 } from 'testcontainers'
 import * as path from 'path'
 import knex, { Knex } from 'knex'
-import { knexConfig } from '@app/shared'
+import { knexConfig } from '../libs/shared/src'
 
 const composeFilePath = path.resolve(process.cwd(), 'test')
 const composeFile = 'docker-compose-test.yaml'
@@ -31,7 +31,7 @@ export const startDockerPostgres = async () => {
     }
 }
 
-const tables = []
+const tables = ['messages']
 
 export const resetDB = async (sqlConnection: Knex) => {
     return Promise.all(

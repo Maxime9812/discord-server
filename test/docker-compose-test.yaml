@@ -10,7 +10,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: secret
-      POSTGRES_DB: database_test
+      POSTGRES_DB: discord
 
 networks:
   app_net:
