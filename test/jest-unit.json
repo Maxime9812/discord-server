@@ -8,5 +8,14 @@
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
         "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "roots": [
+        "<rootDir>/src/",
+        "<rootDir>/libs/"
+    ],
+    "moduleNameMapper": {
+        "^@app/chat(|/.*)$": "<rootDir>/libs/chat/src/$1",
+        "^@app/iam(|/.*)$": "<rootDir>/libs/iam/src/$1",
+        "^@app/shared(|/.*)$": "<rootDir>/libs/shared/src/$1"
     }
 }

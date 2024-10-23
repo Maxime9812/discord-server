@@ -1,7 +1,9 @@
 import { Command } from '@app/shared'
 
 export type SendDirectMessagePayload = {
-    to: string
+    messageId: string
+    emitterId: string
+    receiverId: string
     message: string
 }
 
