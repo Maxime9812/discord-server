@@ -1,16 +1,11 @@
-import { CommandHandler, DomainError } from '@app/shared'
+import { CommandHandler } from '@app/shared'
 import {
     SendDirectMessageCommand,
     SendDirectMessagePayload,
 } from './send-direct-message.command'
 import { ChatterRepository, MessageRepository } from '../../gateways'
 import { DateProvider } from '../../domain'
-
-export class ChatterNotFoundError extends DomainError {
-    constructor(chatterId: string) {
-        super(`Chatter with id ${chatterId} not found`)
-    }
-}
+import { ChatterNotFoundError } from './send-direct-message.errors'
 
 export class SendDirectMessageHandler
     implements CommandHandler<SendDirectMessageCommand>

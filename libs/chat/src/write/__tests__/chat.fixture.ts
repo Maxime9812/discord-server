@@ -1,4 +1,9 @@
-import { Chatter, DeterministicDateProvider, MessageSnapshot } from '../domain'
+import {
+    Chatter,
+    DeterministicDateProvider,
+    Message,
+    MessageSnapshot,
+} from '../domain'
 import { InMemoryChatterRepository } from '../infra/gateways/in-memory-chatter.repository'
 import { InMemoryMessageRepository } from '../infra/gateways/in-memory-message.repository'
 import {
@@ -31,8 +36,10 @@ export const createChatFixture = () => {
                 error = e
             }
         },
-        thenMessagesShouldBe(messages: MessageSnapshot[]) {
-            expect(messageRepository.getAll()).toEqual(messages)
+        thenMessagesShouldBe(messages: Message[]) {
+            expect(messageRepository.getAll()).toEqual(
+                messages.map((m) => m.snapshot)
+            )
         },
         thenErrorShouldBe(expectedError: Error) {
             expect(error).toEqual(expectedError)

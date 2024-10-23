@@ -1,10 +1,11 @@
 import { ChatFixture, createChatFixture } from '../../__tests__/chat.fixture'
 import { chatterBuilder } from '../../__tests__/chatter.builder'
+import { messageBuilder } from '../../__tests__/message.builder'
 import {
     ChatterNotFriendWithReceiverError,
     MessageContentTooLongError,
 } from '../../domain'
-import { ChatterNotFoundError } from './send-direct-message.handler'
+import { ChatterNotFoundError } from './send-direct-message.errors'
 
 const MAXIME = chatterBuilder().withId('1234').withFriend('5678').build()
 const WILLIAM = chatterBuilder().withId('5678').withFriend('1234').build()
@@ -29,13 +30,13 @@ describe('Feature: Send direct message', () => {
         })
 
         fixture.thenMessagesShouldBe([
-            {
-                id: 'message-id',
-                emitterId: MAXIME.id,
-                receiverId: WILLIAM.id,
-                content: 'Hello, world!',
-                sendAt: new Date('2024-10-23'),
-            },
+            messageBuilder()
+                .withId('message-id')
+                .withEmitterId(MAXIME.id)
+                .withReceiverId(WILLIAM.id)
+                .withContent('Hello, world!')
+                .sendAt(new Date('2024-10-23'))
+                .build(),
         ])
     })
 
