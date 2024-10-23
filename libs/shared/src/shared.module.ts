@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
+import { CommandModule } from './commands/command.module'
 
 @Module({
-    providers: [],
-    exports: [],
+    imports: [CommandModule],
 })
 export class SharedModule {}
