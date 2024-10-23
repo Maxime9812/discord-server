@@ -19,6 +19,7 @@ export class InMemoryCommandBus implements CommandBus {
         }
 
         this.handlers.set(command, handler)
+        return this
     }
 
     async execute<P>(command: Command<P>) {

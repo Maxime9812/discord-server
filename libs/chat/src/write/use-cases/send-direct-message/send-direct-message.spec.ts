@@ -1,22 +1,14 @@
 import { ChatFixture, createChatFixture } from '../../__tests__/chat.fixture'
+import { chatterBuilder } from '../../__tests__/chatter.builder'
 import {
-    Chatter,
     ChatterNotFriendWithReceiverError,
     MessageContentTooLongError,
 } from '../../domain'
+import { ChatterNotFoundError } from './send-direct-message.handler'
 
-const MAXIME = Chatter.fromSnapshot({
-    id: '1234',
-    friends: ['5678'],
-})
-const WILLIAM = Chatter.fromSnapshot({
-    id: '5678',
-    friends: ['1234'],
-})
-const MATHIS = Chatter.fromSnapshot({
-    id: '9012',
-    friends: [],
-})
+const MAXIME = chatterBuilder().withId('1234').withFriend('5678').build()
+const WILLIAM = chatterBuilder().withId('5678').withFriend('1234').build()
+const MATHIS = chatterBuilder().withId('9012').withoutFriend().build()
 
 describe('Feature: Send direct message', () => {
     let fixture: ChatFixture
@@ -71,5 +63,31 @@ describe('Feature: Send direct message', () => {
         })
 
         fixture.thenErrorShouldBe(new MessageContentTooLongError())
+    })
+
+    test('Can NOT send a message to an unknown chatter', async () => {
+        fixture.givenChatters([MAXIME])
+
+        await fixture.whenSendDirectMessage({
+            messageId: 'message-id',
+            emitterId: MAXIME.id,
+            receiverId: 'unknown-id',
+            content: 'Hello, world!',
+        })
+
+        fixture.thenErrorShouldBe(new ChatterNotFoundError('unknown-id'))
+    })
+
+    test('Can NOT send a message when emitter is unknown', async () => {
+        fixture.givenChatters([MAXIME])
+
+        await fixture.whenSendDirectMessage({
+            messageId: 'message-id',
+            emitterId: 'unknown-id',
+            receiverId: MAXIME.id,
+            content: 'Hello, world!',
+        })
+
+        fixture.thenErrorShouldBe(new ChatterNotFoundError('unknown-id'))
     })
 })

@@ -1,10 +1,16 @@
-import { CommandHandler } from '@app/shared'
+import { CommandHandler, DomainError } from '@app/shared'
 import {
     SendDirectMessageCommand,
     SendDirectMessagePayload,
 } from './send-direct-message.command'
 import { ChatterRepository, MessageRepository } from '../../gateways'
 import { DateProvider } from '../../domain'
+
+export class ChatterNotFoundError extends DomainError {
+    constructor(chatterId: string) {
+        super(`Chatter with id ${chatterId} not found`)
+    }
+}
 
 export class SendDirectMessageHandler
     implements CommandHandler<SendDirectMessageCommand>
@@ -16,10 +22,8 @@ export class SendDirectMessageHandler
     ) {}
 
     async handle(command: SendDirectMessagePayload): Promise<void> {
-        const [chatter, receiver] = await Promise.all([
-            this.chatterRepository.byId(command.emitterId),
-            this.chatterRepository.byId(command.receiverId),
-        ])
+        const chatter = await this.getChatter(command.emitterId)
+        const receiver = await this.getChatter(command.receiverId)
 
         const message = chatter.write(receiver, {
             id: command.messageId,
@@ -28,5 +32,14 @@ export class SendDirectMessageHandler
         })
 
         await this.messageRepository.save(message)
+    }
+
+    private async getChatter(chatterId: string) {
+        const chatter = await this.chatterRepository.byId(chatterId)
+        if (!chatter) {
+            throw new ChatterNotFoundError(chatterId)
+        }
+
+        return chatter
     }
 }

@@ -4,9 +4,11 @@ import { ChatterRepository } from '../../gateways'
 export class InMemoryChatterRepository implements ChatterRepository {
     private chatters: Map<string, ChatterSnapshot> = new Map()
 
-    async byId(id: string): Promise<Chatter> {
-        const snapshot = this.chatters.get(id)!
-        return Chatter.fromSnapshot(snapshot)
+    async byId(id: string): Promise<Chatter | undefined> {
+        const snapshot = this.chatters.get(id)
+        if (snapshot) {
+            return Chatter.fromSnapshot(snapshot)
+        }
     }
 
     givenChatters(chatters: Chatter[]) {
