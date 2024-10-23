@@ -1,19 +1,20 @@
 import { SendDirectMessageCommand } from '@app/chat/write/use-cases'
 import { CommandBus } from '@app/shared/commands/command-bus'
-import { Controller, Post } from '@nestjs/common'
+import { Body, Controller, Post } from '@nestjs/common'
+import { SendDirectMessageDTO } from '../dtos/SendDirectMessageDTO'
 
 @Controller('chat')
 export class ChatController {
     constructor(private readonly commandBus: CommandBus) {}
 
     @Post('/send-message')
-    async sendMessage() {
+    async sendMessage(@Body() payload: SendDirectMessageDTO) {
         await this.commandBus.execute(
             new SendDirectMessageCommand({
-                messageId: '1',
+                messageId: payload.messageId,
                 emitterId: '1',
-                receiverId: '2',
-                content: 'Hello world !',
+                receiverId: payload.receiverId,
+                content: payload.content,
             })
         )
     }
