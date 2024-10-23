@@ -26,7 +26,7 @@ export class ChatController {
         )
     }
 
-    @Delete('/:messageId/delete')
+    @Delete('/:messageId')
     async deleteMessage(@Param() params: DeleteMessageParams) {
         await this.commandBus.execute(
             new DeleteDirectMessageCommand({

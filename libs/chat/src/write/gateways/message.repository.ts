@@ -1,7 +1,7 @@
 import { Message } from '../domain/message'
 
 export type MessageRepository = {
-    byId: (id: string) => Promise<Message>
+    byId: (id: string) => Promise<Message | undefined>
     save(message: Message): Promise<void>
 }
 

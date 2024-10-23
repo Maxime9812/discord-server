@@ -5,8 +5,10 @@ export class InMemoryMessageRepository implements MessageRepository {
     private messages: Map<string, MessageSnapshot> = new Map()
 
     async byId(id: string) {
-        const snapshot = this.messages.get(id)!
-        return Message.fromSnapshot(snapshot)
+        const snapshot = this.messages.get(id)
+        if (snapshot) {
+            return Message.fromSnapshot(snapshot)
+        }
     }
 
     async save(message: Message): Promise<void> {
