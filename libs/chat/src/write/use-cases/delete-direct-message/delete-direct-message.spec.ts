@@ -2,11 +2,11 @@ import { ChatFixture, createChatFixture } from '../../__tests__/chat.fixture'
 import { chatterBuilder } from '../../__tests__/chatter.builder'
 import { messageBuilder } from '../../__tests__/message.builder'
 import {
+    ChatterNotFoundError,
     MessageAlreadyDeletedError,
+    MessageNotFoundError,
     MessageWasNotSentByChatterError,
 } from '../../domain'
-import { ChatterNotFoundError } from '../send-direct-message'
-import { MessageNotFoundError } from './delete-direct-message.errors'
 
 const EMITTER = chatterBuilder().withId('1234').build()
 const RECEIVER = chatterBuilder().withId('5678').build()

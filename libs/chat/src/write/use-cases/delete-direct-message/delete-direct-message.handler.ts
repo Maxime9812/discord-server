@@ -4,8 +4,7 @@ import {
     DeleteDirectMessagePayload,
 } from './delete-direct-message.command'
 import { ChatterRepository, MessageRepository } from '../../gateways'
-import { MessageNotFoundError } from './delete-direct-message.errors'
-import { ChatterNotFoundError } from '../send-direct-message'
+import { ChatterNotFoundError, MessageNotFoundError } from '../../domain'
 
 export class DeleteDirectMessageHandler
     implements CommandHandler<DeleteDirectMessageCommand>

@@ -4,8 +4,7 @@ import {
     SendDirectMessagePayload,
 } from './send-direct-message.command'
 import { ChatterRepository, MessageRepository } from '../../gateways'
-import { DateProvider } from '../../domain'
-import { ChatterNotFoundError } from './send-direct-message.errors'
+import { ChatterNotFoundError, DateProvider } from '../../domain'
 
 export class SendDirectMessageHandler
     implements CommandHandler<SendDirectMessageCommand>

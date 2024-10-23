@@ -1,5 +1,5 @@
-import { DomainError } from '@app/shared'
-import { Message } from './message'
+import { Message } from '../message'
+import { ChatterNotFriendWithReceiverError } from './chatter.errors'
 
 type ChatterProps = {
     id: string
@@ -13,12 +13,6 @@ type WriteMessage = {
 }
 
 export type ChatterSnapshot = Chatter['snapshot']
-
-export class ChatterNotFriendWithReceiverError extends DomainError {
-    constructor() {
-        super('Chatters are not friends')
-    }
-}
 
 export class Chatter {
     private constructor(private props: ChatterProps) {}

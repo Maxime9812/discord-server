@@ -2,10 +2,10 @@ import { ChatFixture, createChatFixture } from '../../__tests__/chat.fixture'
 import { chatterBuilder } from '../../__tests__/chatter.builder'
 import { messageBuilder } from '../../__tests__/message.builder'
 import {
+    ChatterNotFoundError,
     ChatterNotFriendWithReceiverError,
     MessageContentTooLongError,
 } from '../../domain'
-import { ChatterNotFoundError } from './send-direct-message.errors'
 
 const MAXIME = chatterBuilder().withId('1234').withFriend('5678').build()
 const WILLIAM = chatterBuilder().withId('5678').withFriend('1234').build()
