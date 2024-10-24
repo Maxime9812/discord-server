@@ -6,7 +6,11 @@ import {
     SendFriendRequestHandler,
 } from '../../use-cases'
 import { CommandBus } from '@app/shared'
-import { ChatterRepository, MessageRepository } from '../../gateways'
+import {
+    ChatterRepository,
+    MessageRepository,
+    UserSocialRepository,
+} from '../../gateways'
 import { DateProvider } from '../../domain'
 import { ChatWriteDependenciesModule } from './chat-write-dependencies.module'
 import { DeleteDirectMessageHandler } from '../../use-cases/delete-direct-message/delete-direct-message.handler'
@@ -45,8 +49,15 @@ import { DeleteDirectMessageCommand } from '../../use-cases/delete-direct-messag
         },
         {
             provide: SendFriendRequestHandler,
-            useFactory() {
-                return new SendFriendRequestHandler()
+            inject: [UserSocialRepository, DateProvider],
+            useFactory(
+                userSocialRepository: UserSocialRepository,
+                DateProvider: DateProvider
+            ) {
+                return new SendFriendRequestHandler(
+                    userSocialRepository,
+                    DateProvider
+                )
             },
         },
     ],

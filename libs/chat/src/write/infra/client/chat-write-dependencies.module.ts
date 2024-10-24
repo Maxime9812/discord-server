@@ -1,17 +1,26 @@
 import { Module } from '@nestjs/common'
-import { ChatterRepository, MessageRepository } from '../../gateways'
+import {
+    ChatterRepository,
+    MessageRepository,
+    UserSocialRepository,
+} from '../../gateways'
 import { DateProvider, DeterministicDateProvider } from '../../domain'
 import { Knex } from 'knex'
 import { DatabaseModule, SqlConnection } from '@app/shared'
-import { InMemoryChatterRepository, KnexMessageRepository } from '../gateways'
+import {
+    InMemoryUserSocialRepository,
+    KnexChatterRepository,
+    KnexMessageRepository,
+} from '../gateways'
 
 @Module({
     imports: [DatabaseModule],
     providers: [
         {
             provide: ChatterRepository,
-            useFactory() {
-                return new InMemoryChatterRepository()
+            inject: [SqlConnection],
+            useFactory(knex: Knex) {
+                return new KnexChatterRepository(knex)
             },
         },
         {
@@ -27,7 +36,18 @@ import { InMemoryChatterRepository, KnexMessageRepository } from '../gateways'
                 return new DeterministicDateProvider()
             },
         },
+        {
+            provide: UserSocialRepository,
+            useFactory() {
+                return new InMemoryUserSocialRepository()
+            },
+        },
     ],
-    exports: [ChatterRepository, MessageRepository, DateProvider],
+    exports: [
+        ChatterRepository,
+        MessageRepository,
+        DateProvider,
+        UserSocialRepository,
+    ],
 })
 export class ChatWriteDependenciesModule {}
