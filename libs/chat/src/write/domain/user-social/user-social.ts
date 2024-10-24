@@ -1,5 +1,8 @@
-import { DomainError } from '@app/shared'
-import { FriendRequest } from './friend-request'
+import { FriendRequest } from '../friend-request'
+import {
+    UserSocialAlreadyFriendsError,
+    UserSocialAlreadyRequestedError,
+} from './user-social.errors'
 
 type UserSocialProps = {
     id: string
@@ -8,18 +11,6 @@ type UserSocialProps = {
 }
 
 export type UserSocialSnapshot = UserSocial['snapshot']
-
-export class UserSocialAlreadyFriendsError extends DomainError {
-    constructor(id: string) {
-        super(`User already friends with ${id}`)
-    }
-}
-
-export class UserSocialAlreadyRequestedError extends DomainError {
-    constructor(id: string) {
-        super(`User already requested to be friend with ${id}`)
-    }
-}
 
 export class UserSocial {
     private constructor(private props: UserSocialProps) {}
