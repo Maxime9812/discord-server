@@ -12,7 +12,7 @@
         "start:debug": "nest start --debug --watch",
         "start:prod": "node dist/main",
         "test": "jest --config test/jest-unit.json",
-        "test:it": "jest --config test/jest-integration.json",
+        "test:it": "jest --runInBand --config test/jest-integration.json",
         "knex": "knex --knexfile=\"libs/shared/src/database/knexfile.ts\""
     },
     "dependencies": {
