@@ -1,4 +1,4 @@
-import { Chatter, ChatterSnapshot } from '../domain'
+import { Chatter, ChatterSnapshot } from '../../domain'
 
 export const chatterBuilder = (
     snapshot: ChatterSnapshot = {

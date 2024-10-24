@@ -1,12 +1,14 @@
-import { Chatter, DeterministicDateProvider, Message } from '../domain'
-import { InMemoryChatterRepository } from '../infra/gateways/in-memory-chatter.repository'
-import { InMemoryMessageRepository } from '../infra/gateways/in-memory-message.repository'
+import { Chatter, DeterministicDateProvider, Message } from '../../domain'
 import {
+    DeleteDirectMessageHandler,
+    DeleteDirectMessagePayload,
     SendDirectMessageHandler,
     SendDirectMessagePayload,
-} from '../use-cases'
-import { DeleteDirectMessagePayload } from '../use-cases/delete-direct-message/delete-direct-message.command'
-import { DeleteDirectMessageHandler } from '../use-cases/delete-direct-message/delete-direct-message.handler'
+} from '../../use-cases'
+import {
+    InMemoryChatterRepository,
+    InMemoryMessageRepository,
+} from '../../infra'
 
 export const createChatFixture = () => {
     const messageRepository = new InMemoryMessageRepository()

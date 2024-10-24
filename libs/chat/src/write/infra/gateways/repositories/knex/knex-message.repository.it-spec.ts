@@ -2,8 +2,8 @@ import { knexConfig } from '@app/shared'
 import knex, { Knex } from 'knex'
 import { resetDB } from 'test/docker-manager'
 import { KnexMessageRepository } from './knex-message.repository'
-import { messageBuilder } from '@app/chat/write/__tests__/message.builder'
 import { Message } from '@app/chat/write/domain'
+import { messageBuilder } from '@app/chat/write/__tests__'
 
 describe('KnexMessageRepository', () => {
     let sqlConnection: Knex

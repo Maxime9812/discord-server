@@ -1,5 +1,5 @@
-import { Chatter, ChatterSnapshot } from '../../domain'
-import { ChatterRepository } from '../../gateways'
+import { Chatter, ChatterSnapshot } from '@app/chat/write/domain'
+import { ChatterRepository } from '@app/chat/write/gateways'
 
 export class InMemoryChatterRepository implements ChatterRepository {
     private chatters: Map<string, ChatterSnapshot> = new Map()

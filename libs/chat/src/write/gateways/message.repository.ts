@@ -1,4 +1,4 @@
-import { Message } from '../domain/message'
+import { Message } from '../domain'
 
 export type MessageRepository = {
     byId: (id: string) => Promise<Message | undefined>

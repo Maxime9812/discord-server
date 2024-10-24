@@ -1,4 +1,4 @@
-import { FriendRequest, UserSocial, UserSocialSnapshot } from '../domain'
+import { FriendRequest, UserSocial, UserSocialSnapshot } from '../../domain'
 
 export const userSocialBuilder = (
     snapshot: UserSocialSnapshot = {

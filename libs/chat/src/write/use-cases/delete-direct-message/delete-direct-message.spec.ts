@@ -1,6 +1,9 @@
-import { ChatFixture, createChatFixture } from '../../__tests__/chat.fixture'
-import { chatterBuilder } from '../../__tests__/chatter.builder'
-import { messageBuilder } from '../../__tests__/message.builder'
+import {
+    ChatFixture,
+    chatterBuilder,
+    createChatFixture,
+    messageBuilder,
+} from '../../__tests__'
 import {
     ChatterNotFoundError,
     MessageAlreadyDeletedError,

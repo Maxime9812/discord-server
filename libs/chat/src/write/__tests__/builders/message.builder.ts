@@ -1,4 +1,4 @@
-import { Message, MessageSnapshot } from '../domain'
+import { Message, MessageSnapshot } from '../../domain'
 
 export const messageBuilder = (
     snapshot: MessageSnapshot = {

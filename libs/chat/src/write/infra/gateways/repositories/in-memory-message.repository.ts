@@ -1,5 +1,5 @@
-import { Message, MessageSnapshot } from '../../domain'
-import { MessageRepository } from '../../gateways'
+import { Message, MessageSnapshot } from '@app/chat/write/domain'
+import { MessageRepository } from '@app/chat/write/gateways'
 
 export class InMemoryMessageRepository implements MessageRepository {
     private messages: Map<string, MessageSnapshot> = new Map()

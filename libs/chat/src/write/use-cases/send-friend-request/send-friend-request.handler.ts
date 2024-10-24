@@ -3,8 +3,8 @@ import {
     SendFriendRequestCommand,
     SendFriendRequestPaylaod,
 } from './send-friend-request.command'
-import { UserSocialRepository } from '../../gateways/friend-request.repository'
 import { DateProvider } from '../../domain'
+import { UserSocialRepository } from '../../gateways'
 
 export class SendFriendRequestHandler
     implements CommandHandler<SendFriendRequestCommand>

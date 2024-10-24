@@ -1,3 +1,4 @@
+import { DomainError } from '@app/shared'
 import { FriendRequest } from './friend-request'
 
 type UserSocialProps = {
@@ -7,6 +8,18 @@ type UserSocialProps = {
 }
 
 export type UserSocialSnapshot = UserSocial['snapshot']
+
+export class UserSocialAlreadyFriendsError extends DomainError {
+    constructor(id: string) {
+        super(`User already friends with ${id}`)
+    }
+}
+
+export class UserSocialAlreadyRequestedError extends DomainError {
+    constructor(id: string) {
+        super(`User already requested to be friend with ${id}`)
+    }
+}
 
 export class UserSocial {
     private constructor(private props: UserSocialProps) {}
@@ -25,10 +38,27 @@ export class UserSocial {
         }
     }
 
+    private isFriendWith(receiver: UserSocial) {
+        return this.props.friends.includes(receiver.id)
+    }
+
+    private hasRequested(receiver: UserSocial) {
+        return this.props.friendRequests.some((request) =>
+            request.isFor(receiver.id)
+        )
+    }
+
     requestToBeFriendWith(
         receiver: UserSocial,
         { id, currentDate }: { id: string; currentDate: Date }
     ) {
+        if (this.isFriendWith(receiver)) {
+            throw new UserSocialAlreadyFriendsError(receiver.id)
+        }
+        if (this.hasRequested(receiver)) {
+            throw new UserSocialAlreadyRequestedError(receiver.id)
+        }
+
         const request = FriendRequest.request({
             id,
             senderId: this.id,

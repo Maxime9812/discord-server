@@ -1,4 +1,4 @@
-import { UserSocial } from '../domain/user-social'
+import { UserSocial } from '../domain'
 
 export type UserSocialRepository = {
     byId(id: string): Promise<UserSocial | undefined>

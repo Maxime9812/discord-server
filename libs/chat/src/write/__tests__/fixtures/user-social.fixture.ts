@@ -1,9 +1,9 @@
-import { DeterministicDateProvider, UserSocial } from '../domain'
-import { InMemoryUserSocialRepository } from '../infra'
+import { DeterministicDateProvider, UserSocial } from '../../domain'
+import { InMemoryUserSocialRepository } from '../../infra'
 import {
     SendFriendRequestHandler,
     SendFriendRequestPaylaod,
-} from '../use-cases'
+} from '../../use-cases'
 
 export const createUserSocialFixture = () => {
     const userSocialRepository = new InMemoryUserSocialRepository()
@@ -32,6 +32,9 @@ export const createUserSocialFixture = () => {
             expect(userSocialRepository.getAll()).toEqual(
                 userSocials.map((m) => m.snapshot)
             )
+        },
+        thenErrorShouldBe(expectedError: Error) {
+            expect(error).toEqual(expectedError)
         },
     }
 }
