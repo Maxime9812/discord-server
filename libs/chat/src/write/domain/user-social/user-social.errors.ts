@@ -7,7 +7,7 @@ export class UserSocialAlreadyFriendsError extends DomainError {
 }
 
 export class UserSocialAlreadyRequestedError extends DomainError {
-    constructor(id: string) {
-        super(`User already requested to be friend with ${id}`)
+    constructor() {
+        super('A request already exists')
     }
 }

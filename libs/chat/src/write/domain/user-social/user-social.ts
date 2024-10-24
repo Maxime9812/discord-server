@@ -39,6 +39,12 @@ export class UserSocial {
         )
     }
 
+    private hasReceivedARequestFrom(sender: UserSocial) {
+        return this.props.friendRequests.some((request) =>
+            request.isFrom(sender.id)
+        )
+    }
+
     requestToBeFriendWith(
         receiver: UserSocial,
         { id, currentDate }: { id: string; currentDate: Date }
@@ -47,7 +53,10 @@ export class UserSocial {
             throw new UserSocialAlreadyFriendsError(receiver.id)
         }
         if (this.hasRequested(receiver)) {
-            throw new UserSocialAlreadyRequestedError(receiver.id)
+            throw new UserSocialAlreadyRequestedError()
+        }
+        if (this.hasReceivedARequestFrom(receiver)) {
+            throw new UserSocialAlreadyRequestedError()
         }
 
         const request = FriendRequest.request({

@@ -25,6 +25,10 @@ export class FriendRequest {
         return this.props.receiverId === receiverId
     }
 
+    isFrom(senderId: string) {
+        return this.props.senderId === senderId
+    }
+
     get snapshot() {
         return {
             id: this.props.id,

@@ -81,8 +81,30 @@ describe('Feature: Send friend request', () => {
             receiverId: WILLIAM.id,
         })
 
-        fixture.thenErrorShouldBe(
-            new UserSocialAlreadyRequestedError(WILLIAM.id)
-        )
+        fixture.thenErrorShouldBe(new UserSocialAlreadyRequestedError())
+    })
+
+    test('can NOT send a friend request to a user that already requested you', async () => {
+        fixture.givenUserSocials([
+            userSocialBuilder(MAXIME.snapshot)
+                .withFriendRequest(
+                    FriendRequest.fromSnapshot({
+                        id: '1234',
+                        senderId: WILLIAM.id,
+                        receiverId: MAXIME.id,
+                        requestedAt: new Date('2024-10-23'),
+                    })
+                )
+                .build(),
+            WILLIAM,
+        ])
+
+        await fixture.whenSendFriendRequest({
+            requestId: '1234',
+            senderId: MAXIME.id,
+            receiverId: WILLIAM.id,
+        })
+
+        fixture.thenErrorShouldBe(new UserSocialAlreadyRequestedError())
     })
 })
