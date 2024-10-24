@@ -1,6 +1,5 @@
 type FriendRequestProps = {
     id: string
-    status: 'pending'
     senderId: string
     receiverId: string
     requestedAt: Date
@@ -26,7 +25,6 @@ export class FriendRequest {
         return {
             id: this.props.id,
             requestedAt: this.props.requestedAt,
-            status: this.props.status,
             senderId: this.props.senderId,
             receiverId: this.props.receiverId,
         }
@@ -39,7 +37,6 @@ export class FriendRequest {
     static request(request: Request): FriendRequest {
         return new FriendRequest({
             id: request.id,
-            status: 'pending',
             senderId: request.senderId,
             receiverId: request.receiverId,
             requestedAt: request.currentDate,

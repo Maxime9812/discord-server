@@ -1,5 +1,6 @@
-import { FriendRequest } from '../domain'
+import { UserSocial } from '../domain/user-social'
 
-export type FriendRequestRepository = {
-    save(request: FriendRequest): Promise<void>
+export type UserSocialRepository = {
+    byId(id: string): Promise<UserSocial | undefined>
+    save(social: UserSocial): Promise<void>
 }

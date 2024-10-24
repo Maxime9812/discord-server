@@ -1,20 +1,23 @@
-import { ChatFixture, createChatFixture } from '../../__tests__/chat.fixture'
-import { chatterBuilder } from '../../__tests__/chatter.builder'
+import { userSocialBuilder } from '../../__tests__/user-social.builder'
+import {
+    createUserSocialFixture,
+    UserSocialFixture,
+} from '../../__tests__/user-social.fixture'
 import { FriendRequest } from '../../domain'
 
-const MAXIME = chatterBuilder().withId('1').build()
-const WILLIAM = chatterBuilder().withId('2').build()
+const MAXIME = userSocialBuilder().withId('1').build()
+const WILLIAM = userSocialBuilder().withId('2').build()
 
 describe('Feature: Send friend request', () => {
-    let fixture: ChatFixture
+    let fixture: UserSocialFixture
 
     beforeEach(() => {
-        fixture = createChatFixture()
+        fixture = createUserSocialFixture()
     })
 
     test('Can send a friend request', async () => {
         fixture.givenNowIs(new Date('2024-10-23'))
-        fixture.givenChatters([MAXIME, WILLIAM])
+        fixture.givenUserSocials([MAXIME, WILLIAM])
 
         await fixture.whenSendFriendRequest({
             requestId: '1234',
@@ -22,14 +25,18 @@ describe('Feature: Send friend request', () => {
             receiverId: WILLIAM.id,
         })
 
-        fixture.thenFriendRequestsShouldBe([
-            FriendRequest.fromSnapshot({
-                id: '1234',
-                status: 'pending',
-                senderId: MAXIME.id,
-                receiverId: WILLIAM.id,
-                requestedAt: new Date('2024-10-23'),
-            }),
+        fixture.thenUserSocialsShouldBe([
+            userSocialBuilder(MAXIME.snapshot)
+                .withFriendRequest(
+                    FriendRequest.fromSnapshot({
+                        id: '1234',
+                        senderId: MAXIME.id,
+                        receiverId: WILLIAM.id,
+                        requestedAt: new Date('2024-10-23'),
+                    })
+                )
+                .build(),
+            WILLIAM,
         ])
     })
 })

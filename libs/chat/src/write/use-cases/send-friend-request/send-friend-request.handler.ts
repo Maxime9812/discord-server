@@ -3,28 +3,28 @@ import {
     SendFriendRequestCommand,
     SendFriendRequestPaylaod,
 } from './send-friend-request.command'
-import { FriendRequestRepository } from '../../gateways/friend-request.repository'
+import { UserSocialRepository } from '../../gateways/friend-request.repository'
 import { DateProvider } from '../../domain'
-import { ChatterRepository } from '../../gateways'
 
 export class SendFriendRequestHandler
     implements CommandHandler<SendFriendRequestCommand>
 {
     constructor(
-        private friendRequestRepository: FriendRequestRepository,
-        private chatterRepository: ChatterRepository,
+        private userSocialRepository: UserSocialRepository,
         private dateProvider: DateProvider
     ) {}
 
     async handle(command: SendFriendRequestPaylaod): Promise<void> {
-        const sender = await this.chatterRepository.byId(command.senderId)
-        const receiver = await this.chatterRepository.byId(command.receiverId)
+        const sender = await this.userSocialRepository.byId(command.senderId)
+        const receiver = await this.userSocialRepository.byId(
+            command.receiverId
+        )
 
-        const request = sender.requestToBeFriendWith(receiver, {
+        sender.requestToBeFriendWith(receiver, {
             id: command.requestId,
             currentDate: this.dateProvider.getNow(),
         })
 
-        await this.friendRequestRepository.save(request)
+        await this.userSocialRepository.save(sender)
     }
 }
