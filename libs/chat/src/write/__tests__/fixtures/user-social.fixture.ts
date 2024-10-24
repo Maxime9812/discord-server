@@ -4,11 +4,19 @@ import {
     SendFriendRequestHandler,
     SendFriendRequestPaylaod,
 } from '../../use-cases'
+import {
+    AcceptFriendRequestPayload,
+    AcceptFriendRequestHandler,
+} from '../../use-cases/accept-friend-request'
 
 export const createUserSocialFixture = () => {
     const userSocialRepository = new InMemoryUserSocialRepository()
     const dateProvider = new DeterministicDateProvider()
     const sendFriendRequestHandler = new SendFriendRequestHandler(
+        userSocialRepository,
+        dateProvider
+    )
+    const acceptedFriendRequestHandler = new AcceptFriendRequestHandler(
         userSocialRepository,
         dateProvider
     )
@@ -24,6 +32,13 @@ export const createUserSocialFixture = () => {
         async whenSendFriendRequest(command: SendFriendRequestPaylaod) {
             try {
                 await sendFriendRequestHandler.handle(command)
+            } catch (e) {
+                error = e
+            }
+        },
+        async whenAcceptFriendRequest(command: AcceptFriendRequestPayload) {
+            try {
+                await acceptedFriendRequestHandler.handle(command)
             } catch (e) {
                 error = e
             }

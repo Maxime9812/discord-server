@@ -1,3 +1,5 @@
+import { Friendship } from '../user-social'
+
 type FriendRequestProps = {
     id: string
     senderId: string
@@ -36,6 +38,13 @@ export class FriendRequest {
             senderId: this.props.senderId,
             receiverId: this.props.receiverId,
         }
+    }
+
+    accept(currentDate: Date) {
+        return Friendship.start({
+            friendId: this.props.senderId,
+            currentDate,
+        })
     }
 
     static fromSnapshot(snapshot: FriendRequestSnapshot) {

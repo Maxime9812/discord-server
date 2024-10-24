@@ -1,4 +1,5 @@
 import { FriendRequest } from '../friend-request'
+import { Friendship } from './friendship'
 import {
     UserSocialAlreadyFriendsError,
     UserSocialAlreadyRequestedError,
@@ -6,7 +7,7 @@ import {
 
 type UserSocialProps = {
     id: string
-    friends: string[]
+    friends: Friendship[]
     friendRequests: FriendRequest[]
 }
 
@@ -22,7 +23,9 @@ export class UserSocial {
     get snapshot() {
         return {
             id: this.props.id,
-            friends: this.props.friends,
+            friends: this.props.friends.map(
+                (friendship) => friendship.snapshot
+            ),
             friendRequests: this.props.friendRequests.map(
                 (request) => request.snapshot
             ),
@@ -30,7 +33,9 @@ export class UserSocial {
     }
 
     private isFriendWith(receiver: UserSocial) {
-        return this.props.friends.includes(receiver.id)
+        return this.props.friends.some(
+            (friend) => friend.friendId == receiver.id
+        )
     }
 
     private hasRequested(receiver: UserSocial) {
@@ -49,6 +54,16 @@ export class UserSocial {
         return (
             this.hasRequested(userSocial) ||
             this.hasReceivedARequestFrom(userSocial)
+        )
+    }
+
+    private getFriendRequestById(id: string) {
+        return this.props.friendRequests.find((request) => request.id === id)
+    }
+
+    private removeFriendRequest(request: FriendRequest) {
+        this.props.friendRequests = this.props.friendRequests.filter(
+            (r) => r.id !== request.id
         )
     }
 
@@ -74,10 +89,25 @@ export class UserSocial {
         this.props.friendRequests.push(request)
     }
 
+    acceptFriendRequest(requestId: string, currentDate: Date) {
+        const request = this.getFriendRequestById(requestId)
+
+        if (!request) {
+            return
+        }
+
+        this.removeFriendRequest(request)
+
+        const friendship = request.accept(currentDate)
+        this.props.friends.push(friendship)
+    }
+
     static fromSnapshot(snapshot: UserSocialSnapshot) {
         return new UserSocial({
             id: snapshot.id,
-            friends: snapshot.friends,
+            friends: snapshot.friends.map((friend) =>
+                Friendship.fromSnapshot(friend)
+            ),
             friendRequests: snapshot.friendRequests.map((request) =>
                 FriendRequest.fromSnapshot(request)
             ),

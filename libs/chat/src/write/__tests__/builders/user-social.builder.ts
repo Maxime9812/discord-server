@@ -1,4 +1,9 @@
-import { FriendRequest, UserSocial, UserSocialSnapshot } from '../../domain'
+import {
+    FriendRequest,
+    Friendship,
+    UserSocial,
+    UserSocialSnapshot,
+} from '../../domain'
 
 export const userSocialBuilder = (
     snapshot: UserSocialSnapshot = {
@@ -10,16 +15,22 @@ export const userSocialBuilder = (
     withId(id: string) {
         return userSocialBuilder({ ...snapshot, id })
     },
-    withFriend(friend: string) {
+    withFriend(friend: Friendship) {
         return userSocialBuilder({
             ...snapshot,
-            friends: [...snapshot.friends, friend],
+            friends: [...snapshot.friends, friend.snapshot],
         })
     },
     withoutFriend() {
         return userSocialBuilder({
             ...snapshot,
             friends: [],
+        })
+    },
+    withoutFriendRequest() {
+        return userSocialBuilder({
+            ...snapshot,
+            friendRequests: [],
         })
     },
     withFriendRequest(request: FriendRequest) {

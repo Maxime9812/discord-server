@@ -1,10 +1,11 @@
 import {
     createUserSocialFixture,
+    friendRequestBuilder,
     userSocialBuilder,
     UserSocialFixture,
 } from '../../__tests__'
 import {
-    FriendRequest,
+    Friendship,
     UserSocialAlreadyFriendsError,
     UserSocialAlreadyRequestedError,
     UserSocialNotFoundError,
@@ -34,12 +35,12 @@ describe('Feature: Send friend request', () => {
         fixture.thenUserSocialsShouldBe([
             userSocialBuilder(MAXIME.snapshot)
                 .withFriendRequest(
-                    FriendRequest.fromSnapshot({
-                        id: '1234',
-                        senderId: MAXIME.id,
-                        receiverId: WILLIAM.id,
-                        requestedAt: NOW,
-                    })
+                    friendRequestBuilder()
+                        .withId('1234')
+                        .withSenderId(MAXIME.id)
+                        .withReceiverId(WILLIAM.id)
+                        .requestedAt(NOW)
+                        .build()
                 )
                 .build(),
             WILLIAM,
@@ -48,7 +49,14 @@ describe('Feature: Send friend request', () => {
 
     test('can NOT send a friend request to a friend', async () => {
         fixture.givenUserSocials([
-            userSocialBuilder(MAXIME.snapshot).withFriend(WILLIAM.id).build(),
+            userSocialBuilder(MAXIME.snapshot)
+                .withFriend(
+                    Friendship.fromSnapshot({
+                        friendId: WILLIAM.id,
+                        startedAt: NOW,
+                    })
+                )
+                .build(),
             WILLIAM,
         ])
 
@@ -65,12 +73,11 @@ describe('Feature: Send friend request', () => {
         fixture.givenUserSocials([
             userSocialBuilder(MAXIME.snapshot)
                 .withFriendRequest(
-                    FriendRequest.fromSnapshot({
-                        id: '1234',
-                        senderId: MAXIME.id,
-                        receiverId: WILLIAM.id,
-                        requestedAt: new Date('2024-10-23'),
-                    })
+                    friendRequestBuilder()
+                        .withId('1234')
+                        .withSenderId(MAXIME.id)
+                        .withReceiverId(WILLIAM.id)
+                        .build()
                 )
                 .build(),
             WILLIAM,
@@ -89,12 +96,11 @@ describe('Feature: Send friend request', () => {
         fixture.givenUserSocials([
             userSocialBuilder(MAXIME.snapshot)
                 .withFriendRequest(
-                    FriendRequest.fromSnapshot({
-                        id: '1234',
-                        senderId: WILLIAM.id,
-                        receiverId: MAXIME.id,
-                        requestedAt: new Date('2024-10-23'),
-                    })
+                    friendRequestBuilder()
+                        .withId('1234')
+                        .withSenderId(WILLIAM.id)
+                        .withReceiverId(MAXIME.id)
+                        .build()
                 )
                 .build(),
             WILLIAM,
