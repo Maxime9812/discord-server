@@ -1,3 +1,4 @@
+import { userInfo } from 'os'
 import { FriendRequest } from '../friend-request'
 import {
     UserSocialAlreadyFriendsError,
@@ -45,6 +46,13 @@ export class UserSocial {
         )
     }
 
+    private requestAlreadyExists(userSocial: UserSocial) {
+        return (
+            this.hasRequested(userSocial) ||
+            this.hasReceivedARequestFrom(userSocial)
+        )
+    }
+
     requestToBeFriendWith(
         receiver: UserSocial,
         { id, currentDate }: { id: string; currentDate: Date }
@@ -52,10 +60,8 @@ export class UserSocial {
         if (this.isFriendWith(receiver)) {
             throw new UserSocialAlreadyFriendsError(receiver.id)
         }
-        if (this.hasRequested(receiver)) {
-            throw new UserSocialAlreadyRequestedError()
-        }
-        if (this.hasReceivedARequestFrom(receiver)) {
+
+        if (this.requestAlreadyExists(receiver)) {
             throw new UserSocialAlreadyRequestedError()
         }
 
