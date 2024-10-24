@@ -7,6 +7,7 @@ import {
     FriendRequest,
     UserSocialAlreadyFriendsError,
     UserSocialAlreadyRequestedError,
+    UserSocialNotFoundError,
 } from '../../domain'
 
 const MAXIME = userSocialBuilder().withId('1').build()
@@ -106,5 +107,29 @@ describe('Feature: Send friend request', () => {
         })
 
         fixture.thenErrorShouldBe(new UserSocialAlreadyRequestedError())
+    })
+
+    test('Can NOT send a friend request to a unknown receiver', async () => {
+        fixture.givenUserSocials([MAXIME])
+
+        await fixture.whenSendFriendRequest({
+            requestId: '1234',
+            senderId: MAXIME.id,
+            receiverId: WILLIAM.id,
+        })
+
+        fixture.thenErrorShouldBe(new UserSocialNotFoundError(WILLIAM.id))
+    })
+
+    test('Can NOT send a friend request with a unknown sender', async () => {
+        fixture.givenUserSocials([MAXIME])
+
+        await fixture.whenSendFriendRequest({
+            requestId: '1234',
+            senderId: WILLIAM.id,
+            receiverId: MAXIME.id,
+        })
+
+        fixture.thenErrorShouldBe(new UserSocialNotFoundError(WILLIAM.id))
     })
 })

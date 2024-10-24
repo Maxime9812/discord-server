@@ -11,3 +11,9 @@ export class UserSocialAlreadyRequestedError extends DomainError {
         super('A request already exists')
     }
 }
+
+export class UserSocialNotFoundError extends DomainError {
+    constructor(id: string) {
+        super(`User social with id ${id} not found`)
+    }
+}

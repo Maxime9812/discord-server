@@ -3,7 +3,7 @@ import {
     SendFriendRequestCommand,
     SendFriendRequestPaylaod,
 } from './send-friend-request.command'
-import { DateProvider } from '../../domain'
+import { DateProvider, UserSocialNotFoundError } from '../../domain'
 import { UserSocialRepository } from '../../gateways'
 
 export class SendFriendRequestHandler
@@ -15,10 +15,8 @@ export class SendFriendRequestHandler
     ) {}
 
     async handle(command: SendFriendRequestPaylaod): Promise<void> {
-        const sender = await this.userSocialRepository.byId(command.senderId)
-        const receiver = await this.userSocialRepository.byId(
-            command.receiverId
-        )
+        const sender = await this.getUserSocial(command.senderId)
+        const receiver = await this.getUserSocial(command.receiverId)
 
         sender.requestToBeFriendWith(receiver, {
             id: command.requestId,
@@ -26,5 +24,15 @@ export class SendFriendRequestHandler
         })
 
         await this.userSocialRepository.save(sender)
+    }
+
+    private async getUserSocial(id: string) {
+        const userSocial = await this.userSocialRepository.byId(id)
+
+        if (!userSocial) {
+            throw new UserSocialNotFoundError(id)
+        }
+
+        return userSocial
     }
 }
