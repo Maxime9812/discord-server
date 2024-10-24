@@ -1,4 +1,3 @@
-import { userInfo } from 'os'
 import { FriendRequest } from '../friend-request'
 import {
     UserSocialAlreadyFriendsError,
