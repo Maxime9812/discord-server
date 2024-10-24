@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common'
 import { ChatterRepository, MessageRepository } from '../../gateways'
-import { InMemoryChatterRepository } from '../gateways/in-memory-chatter.repository'
 import { DateProvider, DeterministicDateProvider } from '../../domain'
-import { KnexMessageRepository } from '../gateways/repositories/knex/knex-message.repository'
 import { Knex } from 'knex'
 import { DatabaseModule, SqlConnection } from '@app/shared'
+import { InMemoryChatterRepository, KnexMessageRepository } from '../gateways'
 
 @Module({
     imports: [DatabaseModule],

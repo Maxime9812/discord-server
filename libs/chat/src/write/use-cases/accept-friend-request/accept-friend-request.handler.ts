@@ -4,7 +4,7 @@ import {
     AcceptFriendRequestPayload,
 } from './accept-friend-request.command'
 import { UserSocialRepository } from '../../gateways'
-import { DateProvider } from '../../domain'
+import { DateProvider, UserSocialNotFoundError } from '../../domain'
 
 export class AcceptFriendRequestHandler
     implements CommandHandler<AcceptFriendRequestCommand>
@@ -15,10 +15,20 @@ export class AcceptFriendRequestHandler
     ) {}
 
     async handle(command: AcceptFriendRequestPayload): Promise<void> {
-        const user = await this.userSocialRepository.byId(command.userId)
+        const user = await this.getUserSocial(command.userId)
 
         user.acceptFriendRequest(command.requestId, this.dateProvider.getNow())
 
         await this.userSocialRepository.save(user)
+    }
+
+    private async getUserSocial(userId: string) {
+        const user = await this.userSocialRepository.byId(userId)
+
+        if (!user) {
+            throw new UserSocialNotFoundError(userId)
+        }
+
+        return user
     }
 }

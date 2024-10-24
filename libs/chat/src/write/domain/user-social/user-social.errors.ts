@@ -17,3 +17,9 @@ export class UserSocialNotFoundError extends DomainError {
         super(`User social with id ${id} not found`)
     }
 }
+
+export class UserSocialFriendRequestNotFound extends DomainError {
+    constructor(id: string) {
+        super(`Friend request with id ${id} not found`)
+    }
+}

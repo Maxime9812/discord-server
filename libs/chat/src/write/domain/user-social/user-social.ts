@@ -3,6 +3,8 @@ import { Friendship } from './friendship'
 import {
     UserSocialAlreadyFriendsError,
     UserSocialAlreadyRequestedError,
+    UserSocialFriendRequestNotFound,
+    UserSocialNotFoundError,
 } from './user-social.errors'
 
 type UserSocialProps = {
@@ -93,7 +95,7 @@ export class UserSocial {
         const request = this.getFriendRequestById(requestId)
 
         if (!request) {
-            return
+            throw new UserSocialFriendRequestNotFound(requestId)
         }
 
         this.removeFriendRequest(request)
