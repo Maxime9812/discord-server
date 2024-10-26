@@ -2,6 +2,7 @@ import {
     FriendRequestSnapshot,
     FriendshipSnapshot,
     UserSocial,
+    UserSocialSnapshot,
 } from '@app/chat/write/domain'
 import { UserSocialRepository } from '@app/chat/write/gateways'
 import { Knex } from 'knex'
@@ -13,49 +14,28 @@ export class KnexUserSocialRepository implements UserSocialRepository {
 
     async byId(id: string): Promise<UserSocial | undefined> {
         const user = await this.knex<UserPm>('users').where('id', id).first()
-        if (!user) {
-            return
-        }
-
-        const friendships = await this.knex<FriendshipPm>('friendships')
-            .select()
-            .where('friend_id', id)
-            .orWhere('friend_2_id', id)
-
-        const friends = friendships.map((f) => {
-            return {
-                id: f.id,
-                userId: f.friend_id,
-                userId2: f.friend_2_id,
-                startedAt: f.started_at,
-            }
-        })
-
-        const friendRequestsPm = await this.knex<FriendRequestPm>(
-            'friend_requests'
-        )
-            .select()
-            .where('receiver_id', id)
-            .orWhere('sender_id', id)
-
-        const friendRequests = friendRequestsPm.map((f) => {
-            return {
-                id: f.id,
-                senderId: f.sender_id,
-                receiverId: f.receiver_id,
-                requestedAt: f.requested_at,
-            }
-        })
+        if (!user) return
 
         return UserSocial.fromSnapshot({
             id: user.id,
-            friends,
-            friendRequests,
+            friends: (await this.getFriendshipsPm(id)).map(
+                KnexUserSocialRepository.friendshipToDomain
+            ),
+            friendRequests: (await this.getFriendRequestsPm(id)).map(
+                KnexUserSocialRepository.friendRequestToDomain
+            ),
         })
     }
 
     async save(social: UserSocial): Promise<void> {
-        const { friends, friendRequests } = social.snapshot
+        const snapshot = social.snapshot
+
+        await this.saveFriendships(snapshot)
+        await this.saveFriendRequests(snapshot)
+    }
+
+    private async saveFriendships(social: UserSocialSnapshot): Promise<void> {
+        const { friends } = social
 
         const friendships = await this.knex<FriendshipPm>('friendships')
             .select()
@@ -85,6 +65,12 @@ export class KnexUserSocialRepository implements UserSocialRepository {
                 .onConflict('id')
                 .merge()
         }
+    }
+
+    private async saveFriendRequests(
+        social: UserSocialSnapshot
+    ): Promise<void> {
+        const { friendRequests } = social
 
         const friendRequestsPm = await this.knex<FriendRequestPm>(
             'friend_requests'
@@ -118,6 +104,20 @@ export class KnexUserSocialRepository implements UserSocialRepository {
         }
     }
 
+    private getFriendshipsPm(id: string): Promise<FriendshipPm[]> {
+        return this.knex<FriendshipPm>('friendships')
+            .select()
+            .where('friend_id', id)
+            .orWhere('friend_2_id', id)
+    }
+
+    private getFriendRequestsPm(id: string): Promise<FriendRequestPm[]> {
+        return this.knex<FriendRequestPm>('friend_requests')
+            .select()
+            .where('receiver_id', id)
+            .orWhere('sender_id', id)
+    }
+
     private static friendRequestToPersistence(
         friendRequest: FriendRequestSnapshot
     ): FriendRequestPm {
@@ -137,6 +137,26 @@ export class KnexUserSocialRepository implements UserSocialRepository {
             friend_id: friendship.userId,
             friend_2_id: friendship.userId2,
             started_at: friendship.startedAt,
+        }
+    }
+
+    private static friendRequestToDomain(
+        pm: FriendRequestPm
+    ): FriendRequestSnapshot {
+        return {
+            id: pm.id,
+            senderId: pm.sender_id,
+            receiverId: pm.receiver_id,
+            requestedAt: pm.requested_at,
+        }
+    }
+
+    private static friendshipToDomain(pm: FriendshipPm): FriendshipSnapshot {
+        return {
+            id: pm.id,
+            userId: pm.friend_id,
+            userId2: pm.friend_2_id,
+            startedAt: pm.started_at,
         }
     }
 }
