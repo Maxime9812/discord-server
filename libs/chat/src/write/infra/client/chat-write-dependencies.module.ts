@@ -4,7 +4,7 @@ import {
     MessageRepository,
     UserSocialRepository,
 } from '../../gateways'
-import { DateProvider, DeterministicDateProvider } from '../../domain'
+import { DateProvider, RealDateProvider } from '../../domain'
 import { Knex } from 'knex'
 import { DatabaseModule, SqlConnection } from '@app/shared'
 import { KnexChatterRepository, KnexMessageRepository } from '../gateways'
@@ -30,7 +30,7 @@ import { KnexUserSocialRepository } from '../gateways/repositories/knex/knex-use
         {
             provide: DateProvider,
             useFactory() {
-                return new DeterministicDateProvider()
+                return new RealDateProvider()
             },
         },
         {

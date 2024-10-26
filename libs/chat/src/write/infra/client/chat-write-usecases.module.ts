@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common'
 import {
+    AcceptFriendRequestCommand,
+    AcceptFriendRequestHandler,
     SendDirectMessageCommand,
     SendDirectMessageHandler,
     SendFriendRequestCommand,
@@ -60,6 +62,19 @@ import { DeleteDirectMessageCommand } from '../../use-cases/delete-direct-messag
                 )
             },
         },
+        {
+            provide: AcceptFriendRequestHandler,
+            inject: [UserSocialRepository, DateProvider],
+            useFactory(
+                userSocialRepository: UserSocialRepository,
+                dateProvider: DateProvider
+            ) {
+                return new AcceptFriendRequestHandler(
+                    userSocialRepository,
+                    dateProvider
+                )
+            },
+        },
     ],
 })
 export class ChatWriteUsecasesModule {
@@ -67,7 +82,8 @@ export class ChatWriteUsecasesModule {
         commandBus: CommandBus,
         sendDirectMessageHandler: SendDirectMessageHandler,
         deleteDirectMessageHandler: DeleteDirectMessageHandler,
-        sendFriendRequestHandler: SendFriendRequestHandler
+        sendFriendRequestHandler: SendFriendRequestHandler,
+        acceptFriendRequestHandler: AcceptFriendRequestHandler
     ) {
         commandBus
             .registerHandler(SendDirectMessageCommand, sendDirectMessageHandler)
@@ -76,5 +92,9 @@ export class ChatWriteUsecasesModule {
                 deleteDirectMessageHandler
             )
             .registerHandler(SendFriendRequestCommand, sendFriendRequestHandler)
+            .registerHandler(
+                AcceptFriendRequestCommand,
+                acceptFriendRequestHandler
+            )
     }
 }

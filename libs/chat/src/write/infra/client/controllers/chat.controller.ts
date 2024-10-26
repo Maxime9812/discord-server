@@ -19,7 +19,7 @@ export class ChatController {
         await this.commandBus.execute(
             new SendDirectMessageCommand({
                 messageId: params.messageId,
-                emitterId: '1',
+                emitterId: '0c16374a-f2fd-4bd1-9304-296601013047',
                 receiverId: payload.receiverId,
                 content: payload.content,
             })
@@ -31,7 +31,7 @@ export class ChatController {
         await this.commandBus.execute(
             new DeleteDirectMessageCommand({
                 id: params.messageId,
-                chatterId: '1',
+                chatterId: '0c16374a-f2fd-4bd1-9304-296601013047',
             })
         )
     }
