@@ -3,7 +3,7 @@ import { KnexChatterRepository } from './knex-chatter.repository'
 import { resetDB } from 'test/docker-manager'
 import { knexConfig } from '@app/shared'
 import { chatterBuilder } from '@app/chat/write/__tests__'
-import { Chatter, Friendship } from '@app/chat/write/domain'
+import { Chatter } from '@app/chat/write/domain'
 
 describe('Knex chatter repository', () => {
     let sqlConnection: Knex
