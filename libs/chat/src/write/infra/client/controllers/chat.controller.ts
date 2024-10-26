@@ -3,17 +3,19 @@ import {
     SendDirectMessageCommand,
 } from '@app/chat/write/use-cases'
 import { Body, Controller, Delete, Param, Post } from '@nestjs/common'
-import { SendDirectMessageDTO } from '../dtos'
 import { DeleteMessageParams, SendMessageParams } from '../params'
 import { CommandBus } from '@app/shared'
+import { ApiTags } from '@nestjs/swagger'
+import { SendDirectMessageBody } from '../dtos'
 
+@ApiTags('Chat')
 @Controller('chat')
 export class ChatController {
     constructor(private readonly commandBus: CommandBus) {}
 
     @Post('/:messageId/send')
     async sendMessage(
-        @Body() payload: SendDirectMessageDTO,
+        @Body() payload: SendDirectMessageBody,
         @Param() params: SendMessageParams
     ) {
         await this.commandBus.execute(

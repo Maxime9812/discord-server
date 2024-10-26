@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { ValidationPipe } from '@nestjs/common'
 import { NestExpressApplication } from '@nestjs/platform-express'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -10,6 +11,14 @@ async function bootstrap() {
             origin: true,
         },
     })
+
+    const config = new DocumentBuilder()
+        .setTitle('Discord server')
+        .setVersion('1.0')
+        .build()
+    const documentFactory = () => SwaggerModule.createDocument(app, config)
+    SwaggerModule.setup('doc', app, documentFactory)
+
     app.useGlobalPipes(new ValidationPipe())
     app.useStaticAssets('public')
     await app.listen(3000)

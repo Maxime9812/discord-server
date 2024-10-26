@@ -6,7 +6,9 @@ import {
     SendFriendRequestCommand,
 } from '@app/chat/write/use-cases'
 import { SendFriendRequestParams } from '../params'
+import { ApiTags } from '@nestjs/swagger'
 
+@ApiTags('Social')
 @Controller('social')
 export class SocialController {
     constructor(private commandBus: CommandBus) {}

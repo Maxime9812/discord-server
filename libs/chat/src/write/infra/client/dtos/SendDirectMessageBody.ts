@@ -1,6 +1,6 @@
 import { IsUUID, MaxLength } from 'class-validator'
 
-export class SendDirectMessageDTO {
+export class SendDirectMessageBody {
     @IsUUID()
     public receiverId: string
 

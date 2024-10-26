@@ -1,2 +1,2 @@
-export * from './SendDirectMessageDTO'
+export * from './SendDirectMessageBody'
 export * from './SendFriendRequestBody'
