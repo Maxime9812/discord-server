@@ -42,7 +42,7 @@ describe('Feature: Accept friend request', () => {
             userSocialBuilder(user.snapshot)
                 .withFriend(
                     friendshipBuilder()
-                        .withFriendId(WILLIAM.id)
+                        .withUserId(WILLIAM.id)
                         .withStartedAt(NOW)
                         .build()
                 )

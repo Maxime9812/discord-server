@@ -52,7 +52,7 @@ describe('Feature: Send friend request', () => {
             userSocialBuilder(MAXIME.snapshot)
                 .withFriend(
                     Friendship.fromSnapshot({
-                        friendId: WILLIAM.id,
+                        userId: WILLIAM.id,
                         startedAt: NOW,
                     })
                 )

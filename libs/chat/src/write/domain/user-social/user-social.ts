@@ -4,7 +4,6 @@ import {
     UserSocialAlreadyFriendsError,
     UserSocialAlreadyRequestedError,
     UserSocialFriendRequestNotFound,
-    UserSocialNotFoundError,
 } from './user-social.errors'
 
 type UserSocialProps = {
@@ -36,7 +35,7 @@ export class UserSocial {
 
     private isFriendWith(receiver: UserSocial) {
         return this.props.friends.some(
-            (friend) => friend.friendId == receiver.id
+            (friend) => friend.getfriendId(this.id) == receiver.id
         )
     }
 

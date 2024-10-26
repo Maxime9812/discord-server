@@ -42,7 +42,9 @@ export class FriendRequest {
 
     accept(currentDate: Date) {
         return Friendship.start({
-            friendId: this.props.senderId,
+            id: this.props.id,
+            userId: this.props.receiverId,
+            userId2: this.props.senderId,
             currentDate,
         })
     }
