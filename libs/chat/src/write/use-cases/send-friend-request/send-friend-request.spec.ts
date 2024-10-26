@@ -1,11 +1,11 @@
 import {
     createUserSocialFixture,
     friendRequestBuilder,
+    friendshipBuilder,
     userSocialBuilder,
     UserSocialFixture,
 } from '../../__tests__'
 import {
-    Friendship,
     UserSocialAlreadyFriendsError,
     UserSocialAlreadyRequestedError,
     UserSocialNotFoundError,
@@ -51,10 +51,12 @@ describe('Feature: Send friend request', () => {
         fixture.givenUserSocials([
             userSocialBuilder(MAXIME.snapshot)
                 .withFriend(
-                    Friendship.fromSnapshot({
-                        userId: WILLIAM.id,
-                        startedAt: NOW,
-                    })
+                    friendshipBuilder()
+                        .withId('1234')
+                        .withUserId(WILLIAM.id)
+                        .withUserId2(MAXIME.id)
+                        .withStartedAt(NOW)
+                        .build()
                 )
                 .build(),
             WILLIAM,

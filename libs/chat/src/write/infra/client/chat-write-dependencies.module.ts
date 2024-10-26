@@ -7,11 +7,8 @@ import {
 import { DateProvider, DeterministicDateProvider } from '../../domain'
 import { Knex } from 'knex'
 import { DatabaseModule, SqlConnection } from '@app/shared'
-import {
-    InMemoryUserSocialRepository,
-    KnexChatterRepository,
-    KnexMessageRepository,
-} from '../gateways'
+import { KnexChatterRepository, KnexMessageRepository } from '../gateways'
+import { KnexUserSocialRepository } from '../gateways/repositories/knex/knex-user-social.repository'
 
 @Module({
     imports: [DatabaseModule],
@@ -38,8 +35,10 @@ import {
         },
         {
             provide: UserSocialRepository,
-            useFactory() {
-                return new InMemoryUserSocialRepository()
+            inject: [SqlConnection],
+
+            useFactory(knex: Knex) {
+                return new KnexUserSocialRepository(knex)
             },
         },
     ],
