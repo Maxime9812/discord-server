@@ -1,15 +1,16 @@
 import { CommandBus } from '@app/shared'
 import { Body, Controller, Param, Post } from '@nestjs/common'
-import { SendFriendRequestBody } from '../dtos'
+import { SendFriendRequestBody } from '../body'
 import {
     AcceptFriendRequestCommand,
     SendFriendRequestCommand,
 } from '@app/chat/write/use-cases'
 import { SendFriendRequestParams } from '../params'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 
 @ApiTags('Social')
 @Controller('social')
+@ApiBearerAuth()
 export class SocialController {
     constructor(private commandBus: CommandBus) {}
 

@@ -5,11 +5,12 @@ import {
 import { Body, Controller, Delete, Param, Post } from '@nestjs/common'
 import { DeleteMessageParams, SendMessageParams } from '../params'
 import { CommandBus } from '@app/shared'
-import { ApiTags } from '@nestjs/swagger'
-import { SendDirectMessageBody } from '../dtos'
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
+import { SendDirectMessageBody } from '../body'
 
 @ApiTags('Chat')
 @Controller('chat')
+@ApiBearerAuth()
 export class ChatController {
     constructor(private readonly commandBus: CommandBus) {}
 
