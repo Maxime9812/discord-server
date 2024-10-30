@@ -7,7 +7,7 @@ import {
     LogoutHandler,
     RegisterCommand,
     RegisterHandler,
-} from './usecases'
+} from './use-cases'
 import { CommandBus } from '@app/shared'
 
 @Module({
