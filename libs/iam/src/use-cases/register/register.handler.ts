@@ -30,7 +30,7 @@ export class RegisterHandler implements CommandHandler<RegisterCommand> {
         await this.userRepository.save(user)
     }
 
-    async validateUsername(username: string) {
+    private async validateUsername(username: string) {
         const usernameAlreadyExist =
             await this.userRepository.existsByUsername(username)
 
