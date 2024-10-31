@@ -1,12 +1,13 @@
 import { User } from '@app/iam/domain'
 import { UserRepository } from '@app/iam/gateways'
 import { Knex } from 'knex'
+import { UserPm } from './persistence-models'
 
 export class KnexUserRepository implements UserRepository {
     constructor(private knex: Knex) {}
 
     async save(user: User): Promise<void> {
-        await this.knex('users')
+        await this.knex<UserPm>('users')
             .insert({
                 id: user.id,
                 username: user.snapshot.username,
@@ -18,7 +19,7 @@ export class KnexUserRepository implements UserRepository {
     }
 
     async existsByUsername(username: string): Promise<boolean> {
-        const user = await this.knex('users')
+        const user = await this.knex<UserPm>('users')
             .where('username', username)
             .first()
 
