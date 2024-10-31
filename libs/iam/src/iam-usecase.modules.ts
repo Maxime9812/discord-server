@@ -9,7 +9,7 @@ import {
     RegisterHandler,
 } from './use-cases'
 import { CommandBus } from '@app/shared'
-import { UserRepository } from './gateways'
+import { AuthProvider, UserRepository } from './gateways'
 import { DateProvider, IdProvider, PasswordHasher } from './domain'
 
 @Module({
@@ -34,8 +34,17 @@ import { DateProvider, IdProvider, PasswordHasher } from './domain'
         },
         {
             provide: LoginHandler,
-            useFactory: () => {
-                return new LoginHandler()
+            inject: [UserRepository, AuthProvider, PasswordHasher],
+            useFactory: (
+                userRepository: UserRepository,
+                authProvider: AuthProvider,
+                passwordHasher: PasswordHasher
+            ) => {
+                return new LoginHandler(
+                    userRepository,
+                    authProvider,
+                    passwordHasher
+                )
             },
         },
         {
