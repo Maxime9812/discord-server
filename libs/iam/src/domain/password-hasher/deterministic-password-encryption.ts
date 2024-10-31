@@ -7,6 +7,10 @@ export class DeterministicPasswordEncryption implements PasswordHasher {
         return this._hash.get(password) || ''
     }
 
+    compare(password: string, hash: string) {
+        return this._hash.get(password) === hash
+    }
+
     givenHash(password: string, hash: string) {
         return this._hash.set(password, hash)
     }

@@ -25,4 +25,8 @@ export class KnexUserRepository implements UserRepository {
 
         return !!user
     }
+
+    async getByUsername(username: string): Promise<User> {
+        throw new Error('Method not implemented.')
+    }
 }

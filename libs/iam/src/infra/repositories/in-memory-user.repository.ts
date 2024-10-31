@@ -14,6 +14,14 @@ export class InMemoryUserRepository implements UserRepository {
         )
     }
 
+    async getByUsername(username: string) {
+        const user = Array.from(this.users.values()).find(
+            (user) => user.username === username
+        )
+
+        return User.fromSnapshot(user)
+    }
+
     getAll() {
         return Array.from(this.users.values())
     }

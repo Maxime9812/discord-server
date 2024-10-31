@@ -5,3 +5,9 @@ export class UsernameAlreadyExistsError extends DomainError {
         super(`Username "${username}" is already taken`)
     }
 }
+
+export class UserPasswordDoesNotMatchError extends DomainError {
+    constructor() {
+        super('User password does not match')
+    }
+}

@@ -14,6 +14,10 @@ export class User {
         return this.props.id
     }
 
+    get password() {
+        return this.props.password
+    }
+
     get snapshot() {
         return {
             id: this.props.id,

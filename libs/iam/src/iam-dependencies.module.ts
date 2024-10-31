@@ -9,8 +9,8 @@ import {
     RealDateProvider,
 } from './domain'
 import { DatabaseModule, SqlConnection } from '@app/shared'
-import { KnexUserRepository } from './infra/repositories/knex-user.repository'
 import { Knex } from 'knex'
+import { KnexUserRepository } from './infra'
 
 @Module({
     imports: [DatabaseModule],

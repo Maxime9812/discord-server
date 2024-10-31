@@ -5,19 +5,29 @@ import {
     User,
 } from '../domain'
 import { InMemoryUserRepository } from '../infra'
-import { RegisterHandler, RegisterPayload } from '../use-cases'
+import { FakeAuthProvider } from '../infra/auth-provider'
+import {
+    LoginHandler,
+    LoginPayload,
+    RegisterHandler,
+    RegisterPayload,
+} from '../use-cases'
 
 export const createFixture = () => {
     const userRepository = new InMemoryUserRepository()
-    const passwordEncryption = new DeterministicPasswordEncryption()
+    const passwordHasher = new DeterministicPasswordEncryption()
     const idProvider = new DeterministicIdProvider()
     const dateProvider = new DeterministicDateProvider()
+    const authProvider = new FakeAuthProvider()
+
     const register = new RegisterHandler(
         userRepository,
-        passwordEncryption,
+        passwordHasher,
         idProvider,
         dateProvider
     )
+    const login = new LoginHandler(userRepository, authProvider, passwordHasher)
+
     let error: Error
 
     return {
@@ -25,7 +35,7 @@ export const createFixture = () => {
             idProvider.id = id
         },
         givenHash(password: string, hash: string) {
-            passwordEncryption.givenHash(password, hash)
+            passwordHasher.givenHash(password, hash)
         },
         givenNow(now: Date) {
             dateProvider.now = now
@@ -40,6 +50,13 @@ export const createFixture = () => {
                 error = e
             }
         },
+        async whenLogin(payload: LoginPayload) {
+            try {
+                await login.handle(payload)
+            } catch (e) {
+                error = e
+            }
+        },
         thenUsersShouldBe(expectedUsers: User[]) {
             expect(userRepository.getAll()).toEqual(
                 expectedUsers.map((user) => user.snapshot)
@@ -47,6 +64,11 @@ export const createFixture = () => {
         },
         thenErrorShouldBe(expectedError: Error) {
             expect(error).toEqual(expectedError)
+        },
+        thenUserIsLoggedIn(expectedUser: User) {
+            expect(authProvider.loggedInUser?.snapshot).toEqual(
+                expectedUser.snapshot
+            )
         },
     }
 }
