@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common'
 import { AuthController } from './infra'
+import { IAMUseCaseModule } from './iam-usecase.modules'
 
 @Module({
-    providers: [],
+    imports: [IAMUseCaseModule],
     controllers: [AuthController],
-    exports: [],
 })
 export class IamModule {}

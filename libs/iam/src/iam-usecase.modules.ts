@@ -9,14 +9,32 @@ import {
     RegisterHandler,
 } from './use-cases'
 import { CommandBus } from '@app/shared'
+import { UserRepository } from './gateways'
+import { DateProvider, IdProvider, PasswordEncryption } from './domain'
 
 @Module({
     imports: [IAMDependenciesModule],
     providers: [
         {
             provide: RegisterHandler,
-            useFactory: () => {
-                return new RegisterHandler()
+            inject: [
+                UserRepository,
+                PasswordEncryption,
+                IdProvider,
+                DateProvider,
+            ],
+            useFactory: (
+                userRepository: UserRepository,
+                passwordEncryption: PasswordEncryption,
+                idProvider: IdProvider,
+                dateProvider: DateProvider
+            ) => {
+                return new RegisterHandler(
+                    userRepository,
+                    passwordEncryption,
+                    idProvider,
+                    dateProvider
+                )
             },
         },
         {

@@ -2,6 +2,7 @@ import { CommandBus } from '@app/shared'
 import { Body, Controller, Get, Post } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { LoginBody, RegisterBody } from '../body'
+import { RegisterCommand } from '@app/iam/use-cases'
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -20,7 +21,7 @@ export class AuthController {
 
     @Post('register')
     async register(@Body() body: RegisterBody) {
-        return
+        this.commandBus.execute(new RegisterCommand(body))
     }
 
     @Get('me')
