@@ -1,9 +1,9 @@
-import { PasswordEncryption } from './password-encryption'
+import { PasswordHasher } from './password-hasher'
 
-export class DeterministicPasswordEncryption implements PasswordEncryption {
+export class DeterministicPasswordEncryption implements PasswordHasher {
     private _hash: Map<string, string> = new Map()
 
-    async hash(password: string) {
+    hash(password: string) {
         return this._hash.get(password) || ''
     }
 

@@ -1,4 +1,4 @@
 export * from './user'
-export * from './password-encryption'
+export * from './password-hasher'
 export * from './id-provider'
 export * from './date-provider'

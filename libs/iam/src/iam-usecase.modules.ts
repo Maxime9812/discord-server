@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common'
-import { IAMDependenciesModule } from './iam-dependencies.module'
+import { Module } from "@nestjs/common";
+import { IAMDependenciesModule } from "./iam-dependencies.module";
 import {
     LoginCommand,
     LoginHandler,
@@ -7,10 +7,10 @@ import {
     LogoutHandler,
     RegisterCommand,
     RegisterHandler,
-} from './use-cases'
-import { CommandBus } from '@app/shared'
-import { UserRepository } from './gateways'
-import { DateProvider, IdProvider, PasswordEncryption } from './domain'
+} from "./use-cases";
+import { CommandBus } from "@app/shared";
+import { UserRepository } from "./gateways";
+import { DateProvider, IdProvider, PasswordHasher } from "./domain";
 
 @Module({
     imports: [IAMDependenciesModule],
@@ -25,28 +25,28 @@ import { DateProvider, IdProvider, PasswordEncryption } from './domain'
             ],
             useFactory: (
                 userRepository: UserRepository,
-                passwordEncryption: PasswordEncryption,
+                passwordEncryption: PasswordHasher,
                 idProvider: IdProvider,
-                dateProvider: DateProvider
+                dateProvider: DateProvider,
             ) => {
                 return new RegisterHandler(
                     userRepository,
                     passwordEncryption,
                     idProvider,
-                    dateProvider
-                )
+                    dateProvider,
+                );
             },
         },
         {
             provide: LoginHandler,
             useFactory: () => {
-                return new LoginHandler()
+                return new LoginHandler();
             },
         },
         {
             provide: LogoutHandler,
             useFactory: () => {
-                return new LogoutHandler()
+                return new LogoutHandler();
             },
         },
     ],
@@ -56,11 +56,11 @@ export class IAMUseCaseModule {
         commandBus: CommandBus,
         registerHandler: RegisterHandler,
         loginHandler: LoginHandler,
-        logoutHandler: LogoutHandler
+        logoutHandler: LogoutHandler,
     ) {
         commandBus
             .registerHandler(RegisterCommand, registerHandler)
             .registerHandler(LoginCommand, loginHandler)
-            .registerHandler(LogoutCommand, logoutHandler)
+            .registerHandler(LogoutCommand, logoutHandler);
     }
 }

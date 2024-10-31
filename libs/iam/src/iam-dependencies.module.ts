@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common'
 import { UserRepository } from './gateways'
 import {
+    BcryptPasswordHasher,
+    CryptoIdProvider,
     DateProvider,
-    DeterministicDateProvider,
-    DeterministicIdProvider,
-    DeterministicPasswordEncryption,
     IdProvider,
-    PasswordEncryption,
+    PasswordHasher,
+    RealDateProvider,
 } from './domain'
 import { DatabaseModule, SqlConnection } from '@app/shared'
 import { KnexUserRepository } from './infra/repositories/knex-user.repository'
@@ -24,17 +24,17 @@ import { Knex } from 'knex'
         },
         {
             provide: IdProvider,
-            useClass: DeterministicIdProvider,
+            useClass: CryptoIdProvider,
         },
         {
             provide: DateProvider,
-            useClass: DeterministicDateProvider,
+            useClass: RealDateProvider,
         },
         {
-            provide: PasswordEncryption,
-            useClass: DeterministicPasswordEncryption,
+            provide: PasswordHasher,
+            useClass: BcryptPasswordHasher,
         },
     ],
-    exports: [UserRepository, IdProvider, DateProvider, PasswordEncryption],
+    exports: [UserRepository, IdProvider, DateProvider, PasswordHasher],
 })
 export class IAMDependenciesModule {}

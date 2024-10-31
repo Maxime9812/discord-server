@@ -4,7 +4,7 @@ import { UserRepository } from '@app/iam/gateways'
 import {
     DateProvider,
     IdProvider,
-    PasswordEncryption,
+    PasswordHasher,
     User,
     UsernameAlreadyExistsError,
 } from '@app/iam/domain'
@@ -12,7 +12,7 @@ import {
 export class RegisterHandler implements CommandHandler<RegisterCommand> {
     constructor(
         private userRepository: UserRepository,
-        private passwordEncryption: PasswordEncryption,
+        private passwordEncryption: PasswordHasher,
         private idProvider: IdProvider,
         private dateProvider: DateProvider
     ) {}
@@ -23,7 +23,7 @@ export class RegisterHandler implements CommandHandler<RegisterCommand> {
         const user = User.create({
             id: this.idProvider.generate(),
             username: command.username,
-            password: await this.passwordEncryption.hash(command.password),
+            password: this.passwordEncryption.hash(command.password),
             currentDate: this.dateProvider.getNow(),
         })
 
