@@ -18,13 +18,7 @@ export class RegisterHandler implements CommandHandler<RegisterCommand> {
     ) {}
 
     async handle(command: RegisterPayload): Promise<void> {
-        const usernameAlreadyExist = await this.userRepository.existsByUsername(
-            command.username
-        )
-
-        if (usernameAlreadyExist) {
-            throw new UsernameAlreadyExistsError(command.username)
-        }
+        await this.validateUsername(command.username)
 
         const user = User.create({
             id: this.idProvider.generate(),
@@ -34,5 +28,14 @@ export class RegisterHandler implements CommandHandler<RegisterCommand> {
         })
 
         await this.userRepository.save(user)
+    }
+
+    async validateUsername(username: string) {
+        const usernameAlreadyExist =
+            await this.userRepository.existsByUsername(username)
+
+        if (usernameAlreadyExist) {
+            throw new UsernameAlreadyExistsError(username)
+        }
     }
 }
