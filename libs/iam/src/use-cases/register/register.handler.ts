@@ -1,8 +1,38 @@
 import { CommandHandler } from '@app/shared'
 import { RegisterCommand, RegisterPayload } from './register.command'
+import { UserRepository } from '@app/iam/gateways'
+import {
+    DateProvider,
+    IdProvider,
+    PasswordEncryption,
+    User,
+    UsernameAlreadyExistsError,
+} from '@app/iam/domain'
 
 export class RegisterHandler implements CommandHandler<RegisterCommand> {
-    handle(command: RegisterPayload): Promise<void> {
-        throw new Error('Method not implemented.')
+    constructor(
+        private userRepository: UserRepository,
+        private passwordEncryption: PasswordEncryption,
+        private idProvider: IdProvider,
+        private dateProvider: DateProvider
+    ) {}
+
+    async handle(command: RegisterPayload): Promise<void> {
+        const usernameAlreadyExist = await this.userRepository.existsByUsername(
+            command.username
+        )
+
+        if (usernameAlreadyExist) {
+            throw new UsernameAlreadyExistsError(command.username)
+        }
+
+        const user = User.create({
+            id: this.idProvider.generate(),
+            username: command.username,
+            password: await this.passwordEncryption.hash(command.password),
+            currentDate: this.dateProvider.getNow(),
+        })
+
+        await this.userRepository.save(user)
     }
 }
