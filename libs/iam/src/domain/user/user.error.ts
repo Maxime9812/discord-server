@@ -11,3 +11,9 @@ export class UserPasswordDoesNotMatchError extends DomainError {
         super('User password does not match')
     }
 }
+
+export class UserNotFoundError extends DomainError {
+    constructor() {
+        super('User not found')
+    }
+}

@@ -19,6 +19,10 @@ export class InMemoryUserRepository implements UserRepository {
             (user) => user.username === username
         )
 
+        if (!user) {
+            return null
+        }
+
         return User.fromSnapshot(user)
     }
 

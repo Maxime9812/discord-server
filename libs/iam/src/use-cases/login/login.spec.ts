@@ -1,5 +1,8 @@
 import { createFixture, Fixture, userBuilder } from '@app/iam/__tests__'
-import { UserPasswordDoesNotMatchError } from '@app/iam/domain'
+import {
+    UserNotFoundError,
+    UserPasswordDoesNotMatchError,
+} from '@app/iam/domain'
 
 describe('Feature: Login with username and password', () => {
     let fixture: Fixture
@@ -40,5 +43,14 @@ describe('Feature: Login with username and password', () => {
         })
 
         fixture.thenErrorShouldBe(new UserPasswordDoesNotMatchError())
+    })
+
+    test('User is not logged in with wrong username', async () => {
+        await fixture.whenLogin({
+            username: 'johndoe',
+            password: 'password',
+        })
+
+        fixture.thenErrorShouldBe(new UserNotFoundError())
     })
 })

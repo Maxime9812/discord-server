@@ -1,7 +1,11 @@
 import { CommandHandler } from '@app/shared'
 import { LoginCommand, LoginPayload } from './login.command'
 import { AuthProvider, UserRepository } from '@app/iam/gateways'
-import { PasswordHasher, UserPasswordDoesNotMatchError } from '@app/iam/domain'
+import {
+    PasswordHasher,
+    UserNotFoundError,
+    UserPasswordDoesNotMatchError,
+} from '@app/iam/domain'
 
 export class LoginHandler implements CommandHandler<LoginCommand> {
     constructor(
@@ -12,6 +16,10 @@ export class LoginHandler implements CommandHandler<LoginCommand> {
 
     async handle(command: LoginPayload): Promise<void> {
         const user = await this.userRepository.getByUsername(command.username)
+
+        if (!user) {
+            throw new UserNotFoundError()
+        }
 
         const passwordMatches = this.passwordHasher.compare(
             user.password,
