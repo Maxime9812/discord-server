@@ -16,6 +16,11 @@ export class RequestSessionAuthGateway implements AuthProvider {
     }
 
     async login(user: User): Promise<void> {
-        this.session.user = { id: user.id }
+        return new Promise((resolve, reject) => {
+            this.session.user = { id: user.id }
+            this.session.save(() => {
+                resolve()
+            })
+        })
     }
 }

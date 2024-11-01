@@ -18,7 +18,7 @@ describe('Feature: Login with username and password', () => {
             .build()
 
         fixture.givenUsers([john])
-        fixture.givenHash('password-encrypted', 'password')
+        fixture.givenHash('password', 'password-encrypted')
 
         await fixture.whenLogin({
             username: 'johndoe',
@@ -34,7 +34,7 @@ describe('Feature: Login with username and password', () => {
             .withPassword('password-encrypted')
             .build()
 
-        fixture.givenHash('password-encrypted', 'password')
+        fixture.givenHash('password', 'password-encrypted')
         fixture.givenUsers([john])
 
         await fixture.whenLogin({

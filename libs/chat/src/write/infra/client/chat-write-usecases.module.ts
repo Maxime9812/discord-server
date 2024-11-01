@@ -76,25 +76,11 @@ import { DeleteDirectMessageCommand } from '../../use-cases/delete-direct-messag
             },
         },
     ],
+    exports: [
+        SendDirectMessageHandler,
+        DeleteDirectMessageHandler,
+        SendFriendRequestHandler,
+        AcceptFriendRequestHandler,
+    ],
 })
-export class ChatWriteUsecasesModule {
-    constructor(
-        commandBus: CommandBus,
-        sendDirectMessageHandler: SendDirectMessageHandler,
-        deleteDirectMessageHandler: DeleteDirectMessageHandler,
-        sendFriendRequestHandler: SendFriendRequestHandler,
-        acceptFriendRequestHandler: AcceptFriendRequestHandler
-    ) {
-        commandBus
-            .registerHandler(SendDirectMessageCommand, sendDirectMessageHandler)
-            .registerHandler(
-                DeleteDirectMessageCommand,
-                deleteDirectMessageHandler
-            )
-            .registerHandler(SendFriendRequestCommand, sendFriendRequestHandler)
-            .registerHandler(
-                AcceptFriendRequestCommand,
-                acceptFriendRequestHandler
-            )
-    }
-}
+export class ChatWriteUsecasesModule {}

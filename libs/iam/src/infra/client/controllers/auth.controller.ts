@@ -1,17 +1,25 @@
-import { CommandBus } from '@app/shared'
 import { Body, Controller, Get, Post } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { LoginBody, RegisterBody } from '../body'
-import { LoginCommand, RegisterCommand } from '@app/iam/use-cases'
+import {
+    LoginHandler,
+    RegisterCommand,
+    RegisterHandler,
+} from '@app/iam/use-cases'
+import { Public } from '../metadata'
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-    constructor(private commandBus: CommandBus) {}
+    constructor(
+        private loginHandler: LoginHandler,
+        private registerHandler: RegisterHandler
+    ) {}
 
+    @Public()
     @Post('login')
     async login(@Body() body: LoginBody) {
-        this.commandBus.execute(new LoginCommand(body))
+        this.loginHandler.handle(body)
     }
 
     @Post('logout')
@@ -19,9 +27,10 @@ export class AuthController {
         return
     }
 
+    @Public()
     @Post('register')
     async register(@Body() body: RegisterBody) {
-        this.commandBus.execute(new RegisterCommand(body))
+        this.registerHandler.handle(body)
     }
 
     @Get('me')

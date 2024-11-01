@@ -1,13 +1,6 @@
 import { Module } from '@nestjs/common'
 import { IAMDependenciesModule } from './iam-dependencies.module'
-import {
-    LoginCommand,
-    LoginHandler,
-    LogoutCommand,
-    LogoutHandler,
-    RegisterCommand,
-    RegisterHandler,
-} from './use-cases'
+import { LoginHandler, LogoutHandler, RegisterHandler } from './use-cases'
 import { CommandBus } from '@app/shared'
 import { AuthProvider, UserRepository } from './gateways'
 import { DateProvider, IdProvider, PasswordHasher } from './domain'
@@ -34,7 +27,7 @@ import { DateProvider, IdProvider, PasswordHasher } from './domain'
         },
         {
             provide: LoginHandler,
-            inject: [UserRepository, AuthProvider, PasswordHasher],
+            inject: [UserRepository, AuthProvider, PasswordHasher, CommandBus],
             useFactory: (
                 userRepository: UserRepository,
                 authProvider: AuthProvider,
@@ -54,17 +47,6 @@ import { DateProvider, IdProvider, PasswordHasher } from './domain'
             },
         },
     ],
+    exports: [RegisterHandler, LoginHandler, LogoutHandler],
 })
-export class IAMUseCaseModule {
-    constructor(
-        commandBus: CommandBus,
-        registerHandler: RegisterHandler,
-        loginHandler: LoginHandler,
-        logoutHandler: LogoutHandler
-    ) {
-        commandBus
-            .registerHandler(RegisterCommand, registerHandler)
-            .registerHandler(LoginCommand, loginHandler)
-            .registerHandler(LogoutCommand, logoutHandler)
-    }
-}
+export class IAMUseCaseModule {}

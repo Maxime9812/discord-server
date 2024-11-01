@@ -27,6 +27,16 @@ export class KnexUserRepository implements UserRepository {
     }
 
     async getByUsername(username: string): Promise<User> {
-        throw new Error('Method not implemented.')
+        const user = await this.knex<UserPm>('users')
+            .where('username', username)
+            .first()
+        if (!user) return
+
+        return User.fromSnapshot({
+            id: user.id,
+            username: user.username,
+            password: user.password,
+            registeredAt: user.registered_at,
+        })
     }
 }

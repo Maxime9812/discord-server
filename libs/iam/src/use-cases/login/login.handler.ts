@@ -22,8 +22,8 @@ export class LoginHandler implements CommandHandler<LoginCommand> {
         }
 
         const passwordMatches = this.passwordHasher.compare(
-            user.password,
-            command.password
+            command.password,
+            user.password
         )
 
         if (!passwordMatches) {

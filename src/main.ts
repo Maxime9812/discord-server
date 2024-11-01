@@ -15,7 +15,7 @@ async function bootstrap() {
     const config = new DocumentBuilder()
         .setTitle('Discord server')
         .setVersion('1.0')
-        .addBearerAuth()
+        .addCookieAuth('session')
         .build()
     const documentFactory = () => SwaggerModule.createDocument(app, config)
     SwaggerModule.setup('doc', app, documentFactory)

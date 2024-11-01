@@ -11,12 +11,12 @@ import {
 import { DatabaseModule, SqlConnection } from '@app/shared'
 import { Knex } from 'knex'
 import { KnexUserRepository } from './infra'
-import Redis from 'ioredis'
 import { redisConfig } from './infra/redis-config'
 import RedisStore from 'connect-redis'
 import { RequestSessionAuthGateway } from './infra/auth-provider/request-session-auth-provider'
 import { Store } from 'express-session'
 import { REQUEST } from '@nestjs/core'
+import Redis from 'ioredis'
 
 export const SessionsStore = Symbol('SessionsStore')
 

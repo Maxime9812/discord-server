@@ -70,6 +70,25 @@ describe('KnexUserRepository', () => {
         })
     })
 
+    describe('getByUsername', () => {
+        test('No user with username', async () => {
+            const userFromDb = await repository.getByUsername('maxime')
+            expect(userFromDb).toBeUndefined()
+        })
+
+        test('User with username exists', async () => {
+            const user = userBuilder()
+                .withId('ab3b7dd6-6825-4503-a3d1-c1e4a6c50731')
+                .withUsername('maxime')
+                .build()
+
+            await insertUser(user)
+
+            const userFromDb = await repository.getByUsername('maxime')
+            expect(userFromDb?.snapshot).toEqual(user.snapshot)
+        })
+    })
+
     async function insertUser(user: User) {
         await sqlConnection('users').insert({
             id: user.id,

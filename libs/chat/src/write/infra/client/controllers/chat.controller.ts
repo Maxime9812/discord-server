@@ -1,41 +1,44 @@
 import {
-    DeleteDirectMessageCommand,
-    SendDirectMessageCommand,
+    DeleteDirectMessageHandler,
+    SendDirectMessageHandler,
 } from '@app/chat/write/use-cases'
 import { Body, Controller, Delete, Param, Post } from '@nestjs/common'
 import { DeleteMessageParams, SendMessageParams } from '../params'
-import { CommandBus } from '@app/shared'
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger'
 import { SendDirectMessageBody } from '../body'
+import { AuthUser, User } from '@app/iam'
 
 @ApiTags('Chat')
 @Controller('chat')
 @ApiBearerAuth()
 export class ChatController {
-    constructor(private readonly commandBus: CommandBus) {}
+    constructor(
+        private sendDirectMessageHandler: SendDirectMessageHandler,
+        private deleteMessageHandler: DeleteDirectMessageHandler
+    ) {}
 
     @Post('/:messageId/send')
     async sendMessage(
         @Body() payload: SendDirectMessageBody,
-        @Param() params: SendMessageParams
+        @Param() params: SendMessageParams,
+        @User() user: AuthUser
     ) {
-        await this.commandBus.execute(
-            new SendDirectMessageCommand({
-                messageId: params.messageId,
-                emitterId: '0c16374a-f2fd-4bd1-9304-296601013047',
-                receiverId: payload.receiverId,
-                content: payload.content,
-            })
-        )
+        await this.sendDirectMessageHandler.handle({
+            messageId: params.messageId,
+            emitterId: user.id,
+            receiverId: payload.receiverId,
+            content: payload.content,
+        })
     }
 
     @Delete('/:messageId')
-    async deleteMessage(@Param() params: DeleteMessageParams) {
-        await this.commandBus.execute(
-            new DeleteDirectMessageCommand({
-                id: params.messageId,
-                chatterId: '0c16374a-f2fd-4bd1-9304-296601013047',
-            })
-        )
+    async deleteMessage(
+        @Param() params: DeleteMessageParams,
+        @User() user: AuthUser
+    ) {
+        await this.deleteMessageHandler.handle({
+            id: params.messageId,
+            chatterId: user.id,
+        })
     }
 }
