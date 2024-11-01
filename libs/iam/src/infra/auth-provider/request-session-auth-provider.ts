@@ -8,6 +8,7 @@ type AuthSession = Session & {
 
 export class RequestSessionAuthGateway implements AuthProvider {
     private readonly session: AuthSession
+
     constructor(
         request: Request,
         private readonly redisStore: Store
@@ -16,17 +17,13 @@ export class RequestSessionAuthGateway implements AuthProvider {
     }
 
     async login(user: User): Promise<void> {
-        return new Promise((resolve, reject) => {
-            this.session.user = { id: user.id }
-            this.session.save(() => {
-                resolve()
-            })
-        })
+        this.session.user = { id: user.id }
     }
 
     async logout(): Promise<void> {
-        return new Promise((resolve, reject) => {
-            this.session.destroy(() => {
+        return new Promise((resolve) => {
+            this.redisStore.destroy(this.session.id, () => {
+                this.session.cookie.expires = new Date()
                 resolve()
             })
         })

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common'
+import { Body, Controller, Get, Post, Res } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { LoginBody, RegisterBody } from '../body'
 import {
@@ -7,6 +7,7 @@ import {
     RegisterHandler,
 } from '@app/iam/use-cases'
 import { Public } from '../metadata'
+import { Response } from 'express'
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -20,18 +21,21 @@ export class AuthController {
     @Public()
     @Post('login')
     async login(@Body() body: LoginBody) {
-        this.loginHandler.handle(body)
+        await this.loginHandler.handle(body)
     }
 
+    @Public()
     @Post('logout')
-    async logout() {
-        this.logoutHandler.handle()
+    async logout(@Res() res: Response) {
+        await this.logoutHandler.handle()
+        res.clearCookie('session')
+        res.json()
     }
 
     @Public()
     @Post('register')
     async register(@Body() body: RegisterBody) {
-        this.registerHandler.handle(body)
+        await this.registerHandler.handle(body)
     }
 
     @Get('me')

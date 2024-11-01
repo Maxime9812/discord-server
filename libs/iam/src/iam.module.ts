@@ -41,7 +41,6 @@ export class IamModule implements NestModule {
                     name: 'session',
                     cookie: {
                         httpOnly: true,
-                        domain: 'localhost',
                     },
                 })
             )
