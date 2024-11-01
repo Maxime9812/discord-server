@@ -6,6 +6,7 @@ export type AuthUser = {
 
 export type AuthProvider = {
     login: (user: User) => Promise<void>
+    logout: () => Promise<void>
 }
 
 export const AuthProvider = Symbol('AuthProvider')

@@ -23,4 +23,12 @@ export class RequestSessionAuthGateway implements AuthProvider {
             })
         })
     }
+
+    async logout(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.session.destroy(() => {
+                resolve()
+            })
+        })
+    }
 }

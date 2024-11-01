@@ -42,8 +42,9 @@ import { DateProvider, IdProvider, PasswordHasher } from './domain'
         },
         {
             provide: LogoutHandler,
-            useFactory: () => {
-                return new LogoutHandler()
+            inject: [AuthProvider],
+            useFactory: (authProvider: AuthProvider) => {
+                return new LogoutHandler(authProvider)
             },
         },
     ],

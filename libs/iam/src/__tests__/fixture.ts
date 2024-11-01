@@ -9,6 +9,7 @@ import { FakeAuthProvider } from '../infra/auth-provider'
 import {
     LoginHandler,
     LoginPayload,
+    LogoutHandler,
     RegisterHandler,
     RegisterPayload,
 } from '../use-cases'
@@ -27,6 +28,7 @@ export const createFixture = () => {
         dateProvider
     )
     const login = new LoginHandler(userRepository, authProvider, passwordHasher)
+    const logout = new LogoutHandler(authProvider)
 
     let error: Error
 
@@ -43,6 +45,9 @@ export const createFixture = () => {
         givenUsers(users: User[]) {
             userRepository.givenUsers(users)
         },
+        givenUserIsLoggedIn(user: User) {
+            authProvider.loggedInUser = user
+        },
         async whenRegister(payload: RegisterPayload) {
             try {
                 await register.handle(payload)
@@ -57,6 +62,9 @@ export const createFixture = () => {
                 error = e
             }
         },
+        async whenLogout() {
+            await logout.handle()
+        },
         thenUsersShouldBe(expectedUsers: User[]) {
             expect(userRepository.getAll()).toEqual(
                 expectedUsers.map((user) => user.snapshot)
@@ -69,6 +77,9 @@ export const createFixture = () => {
             expect(authProvider.loggedInUser?.snapshot).toEqual(
                 expectedUser.snapshot
             )
+        },
+        thenUserIsLoggedOut() {
+            expect(authProvider.loggedInUser).toBeUndefined()
         },
     }
 }

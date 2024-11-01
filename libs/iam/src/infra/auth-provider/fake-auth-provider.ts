@@ -6,4 +6,8 @@ export class FakeAuthProvider implements AuthProvider {
     async login(user: User) {
         this.loggedInUser = user
     }
+
+    async logout() {
+        this.loggedInUser = undefined
+    }
 }

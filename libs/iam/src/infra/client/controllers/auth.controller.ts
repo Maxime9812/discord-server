@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger'
 import { LoginBody, RegisterBody } from '../body'
 import {
     LoginHandler,
-    RegisterCommand,
+    LogoutHandler,
     RegisterHandler,
 } from '@app/iam/use-cases'
 import { Public } from '../metadata'
@@ -13,7 +13,8 @@ import { Public } from '../metadata'
 export class AuthController {
     constructor(
         private loginHandler: LoginHandler,
-        private registerHandler: RegisterHandler
+        private registerHandler: RegisterHandler,
+        private logoutHandler: LogoutHandler
     ) {}
 
     @Public()
@@ -24,7 +25,7 @@ export class AuthController {
 
     @Post('logout')
     async logout() {
-        return
+        this.logoutHandler.handle()
     }
 
     @Public()
