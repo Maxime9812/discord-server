@@ -1,6 +1,6 @@
 import { CommandHandler } from '@app/shared'
 import { RegisterCommand, RegisterPayload } from './register.command'
-import { UserRepository } from '@app/iam/gateways'
+import { AuthProvider, UserRepository } from '@app/iam/gateways'
 import {
     DateProvider,
     IdProvider,
@@ -14,7 +14,8 @@ export class RegisterHandler implements CommandHandler<RegisterCommand> {
         private userRepository: UserRepository,
         private passwordEncryption: PasswordHasher,
         private idProvider: IdProvider,
-        private dateProvider: DateProvider
+        private dateProvider: DateProvider,
+        private authProvider: AuthProvider
     ) {}
 
     async handle(command: RegisterPayload): Promise<void> {
@@ -28,6 +29,7 @@ export class RegisterHandler implements CommandHandler<RegisterCommand> {
         })
 
         await this.userRepository.save(user)
+        await this.authProvider.login(user)
     }
 
     private async validateUsername(username: string) {

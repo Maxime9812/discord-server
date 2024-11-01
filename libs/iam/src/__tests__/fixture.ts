@@ -25,7 +25,8 @@ export const createFixture = () => {
         userRepository,
         passwordHasher,
         idProvider,
-        dateProvider
+        dateProvider,
+        authProvider
     )
     const login = new LoginHandler(userRepository, authProvider, passwordHasher)
     const logout = new LogoutHandler(authProvider)

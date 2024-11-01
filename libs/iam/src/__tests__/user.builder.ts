@@ -26,6 +26,12 @@ export const userBuilder = (
             password,
         })
     },
+    registeredAt(registeredAt: Date) {
+        return userBuilder({
+            ...snapshot,
+            registeredAt,
+        })
+    },
     build() {
         return User.fromSnapshot(snapshot)
     },

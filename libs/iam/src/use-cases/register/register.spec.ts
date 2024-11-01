@@ -37,4 +37,24 @@ describe('Feature: Register new user', () => {
 
         fixture.thenErrorShouldBe(new UsernameAlreadyExistsError('maxime'))
     })
+
+    test('User is logged in after registration', async () => {
+        const user = userBuilder()
+            .withId('user-id')
+            .withUsername('maxime')
+            .withPassword('password-encrypted')
+            .registeredAt(new Date('2024-10-23'))
+            .build()
+
+        fixture.givenHash('password', 'password-encrypted')
+        fixture.givenId('user-id')
+        fixture.givenNow(new Date('2024-10-23'))
+
+        await fixture.whenRegister({
+            username: 'maxime',
+            password: 'password',
+        })
+
+        fixture.thenUserIsLoggedIn(user)
+    })
 })

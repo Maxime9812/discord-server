@@ -10,18 +10,26 @@ import { DateProvider, IdProvider, PasswordHasher } from './domain'
     providers: [
         {
             provide: RegisterHandler,
-            inject: [UserRepository, PasswordHasher, IdProvider, DateProvider],
+            inject: [
+                UserRepository,
+                PasswordHasher,
+                IdProvider,
+                DateProvider,
+                AuthProvider,
+            ],
             useFactory: (
                 userRepository: UserRepository,
                 passwordEncryption: PasswordHasher,
                 idProvider: IdProvider,
-                dateProvider: DateProvider
+                dateProvider: DateProvider,
+                authProvider: AuthProvider
             ) => {
                 return new RegisterHandler(
                     userRepository,
                     passwordEncryption,
                     idProvider,
-                    dateProvider
+                    dateProvider,
+                    authProvider
                 )
             },
         },
