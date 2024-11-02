@@ -1,10 +1,7 @@
-import { CommandBus } from '@app/shared'
 import { Body, Controller, Param, Post } from '@nestjs/common'
 import { SendFriendRequestBody } from '../body'
 import {
-    AcceptFriendRequestCommand,
     AcceptFriendRequestHandler,
-    SendFriendRequestCommand,
     SendFriendRequestHandler,
 } from '@app/chat/write/use-cases'
 import { SendFriendRequestParams } from '../params'

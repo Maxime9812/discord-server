@@ -1,5 +1,5 @@
 export type FriendRequest = {
     id: string
-    emitterId: string
+    senderId: string
     requestedAt: Date
 }
