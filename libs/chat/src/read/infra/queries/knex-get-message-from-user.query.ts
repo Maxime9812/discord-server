@@ -14,7 +14,9 @@ export class KnexGetMessagesFromUserQuery implements GetMessagesFromUserQuery {
                 'send_at as sendAt'
             )
             .where('emitter_id', userId)
+            .andWhere('receiver_id', userId2)
             .orWhere('emitter_id', userId2)
+            .andWhere('receiver_id', userId)
             .orderBy('send_at', 'desc')
     }
 }
