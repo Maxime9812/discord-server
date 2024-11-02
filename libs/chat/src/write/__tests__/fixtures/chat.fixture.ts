@@ -9,15 +9,19 @@ import {
     InMemoryChatterRepository,
     InMemoryMessageRepository,
 } from '../../infra'
+import { MessageSentEvent } from '../../domain/message/message.events'
+import { StubEventBus } from '@app/shared'
 
 export const createChatFixture = () => {
     const messageRepository = new InMemoryMessageRepository()
     const chatterRepository = new InMemoryChatterRepository()
     const dateProvider = new DeterministicDateProvider()
+    const eventBus = new StubEventBus()
     const sendDirectMessageHandler = new SendDirectMessageHandler(
         messageRepository,
         chatterRepository,
-        dateProvider
+        dateProvider,
+        eventBus
     )
     const deleteDirectMessageHandler = new DeleteDirectMessageHandler(
         messageRepository,
@@ -56,6 +60,9 @@ export const createChatFixture = () => {
         },
         thenErrorShouldBe(expectedError: Error) {
             expect(error).toEqual(expectedError)
+        },
+        thenShouldHaveEmitMessageSentEvent(event: MessageSentEvent) {
+            expect(eventBus.emittedEvent).toEqual(event)
         },
     }
 }

@@ -1,13 +1,9 @@
 import { Module } from '@nestjs/common'
 import {
-    AcceptFriendRequestCommand,
     AcceptFriendRequestHandler,
-    SendDirectMessageCommand,
     SendDirectMessageHandler,
-    SendFriendRequestCommand,
     SendFriendRequestHandler,
 } from '../../use-cases'
-import { CommandBus } from '@app/shared'
 import {
     ChatterRepository,
     MessageRepository,
@@ -16,23 +12,30 @@ import {
 import { DateProvider } from '../../domain'
 import { ChatWriteDependenciesModule } from './chat-write-dependencies.module'
 import { DeleteDirectMessageHandler } from '../../use-cases/delete-direct-message/delete-direct-message.handler'
-import { DeleteDirectMessageCommand } from '../../use-cases/delete-direct-message/delete-direct-message.command'
+import { EventBus } from '@app/shared'
 
 @Module({
     imports: [ChatWriteDependenciesModule],
     providers: [
         {
             provide: SendDirectMessageHandler,
-            inject: [ChatterRepository, MessageRepository, DateProvider],
+            inject: [
+                ChatterRepository,
+                MessageRepository,
+                DateProvider,
+                EventBus,
+            ],
             useFactory(
                 chatterRepository: ChatterRepository,
                 messageRepository: MessageRepository,
-                DateProvider: DateProvider
+                DateProvider: DateProvider,
+                eventBus: EventBus
             ) {
                 return new SendDirectMessageHandler(
                     messageRepository,
                     chatterRepository,
-                    DateProvider
+                    DateProvider,
+                    eventBus
                 )
             },
         },

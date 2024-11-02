@@ -1,10 +1,11 @@
-import { CommandHandler } from '@app/shared'
+import { CommandHandler, EventBus } from '@app/shared'
 import {
     SendDirectMessageCommand,
     SendDirectMessagePayload,
 } from './send-direct-message.command'
 import { ChatterRepository, MessageRepository } from '../../gateways'
 import { ChatterNotFoundError, DateProvider } from '../../domain'
+import { MessageSentEvent } from '../../domain/message/message.events'
 
 export class SendDirectMessageHandler
     implements CommandHandler<SendDirectMessageCommand>
@@ -12,7 +13,8 @@ export class SendDirectMessageHandler
     constructor(
         private messageRepository: MessageRepository,
         private chatterRepository: ChatterRepository,
-        private dateProvider: DateProvider
+        private dateProvider: DateProvider,
+        private eventBus: EventBus
     ) {}
 
     async handle(command: SendDirectMessagePayload): Promise<void> {
@@ -26,6 +28,16 @@ export class SendDirectMessageHandler
         })
 
         await this.messageRepository.save(message)
+        const snapshot = message.snapshot
+        this.eventBus.emit(
+            new MessageSentEvent({
+                id: snapshot.id,
+                emitterId: snapshot.emitterId,
+                receiverId: snapshot.receiverId,
+                content: snapshot.content,
+                sendAt: snapshot.sendAt,
+            })
+        )
     }
 
     private async getChatter(chatterId: string) {

@@ -9,6 +9,7 @@ import {
     ChatterNotFriendWithReceiverError,
     MessageContentTooLongError,
 } from '../../domain'
+import { MessageSentEvent } from '../../domain/message/message.events'
 
 const MAXIME = chatterBuilder().withId('1234').withFriend('5678').build()
 const WILLIAM = chatterBuilder().withId('5678').withFriend('1234').build()
@@ -93,5 +94,27 @@ describe('Feature: Send direct message', () => {
         })
 
         fixture.thenErrorShouldBe(new ChatterNotFoundError('unknown-id'))
+    })
+
+    test('Emits a message sent event', async () => {
+        fixture.givenChatters([MAXIME, WILLIAM])
+        fixture.givenNowIs(new Date('2024-10-23'))
+
+        await fixture.whenSendDirectMessage({
+            messageId: 'message-id',
+            emitterId: MAXIME.id,
+            receiverId: WILLIAM.id,
+            content: 'Hello, world!',
+        })
+
+        fixture.thenShouldHaveEmitMessageSentEvent(
+            new MessageSentEvent({
+                id: 'message-id',
+                emitterId: MAXIME.id,
+                receiverId: WILLIAM.id,
+                content: 'Hello, world!',
+                sendAt: new Date('2024-10-23'),
+            })
+        )
     })
 })

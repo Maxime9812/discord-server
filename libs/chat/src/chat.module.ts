@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common'
-import { ChatWriteModule } from './write/infra'
+import { ReadChatModule } from './read/infra/read-chat.module'
+import { ChatWriteModule } from './write'
 
 @Module({
-    imports: [ChatWriteModule],
+    imports: [ChatWriteModule, ReadChatModule],
 })
 export class ChatModule {}
