@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Sse, Res, MessageEvent } from '@nestjs/common'
+import {
+    Controller,
+    Get,
+    Param,
+    Sse,
+    Res,
+    MessageEvent,
+    Inject,
+} from '@nestjs/common'
 import { ApiTags, ApiCookieAuth } from '@nestjs/swagger'
 import { GetMessagesWithUserParam } from '../params'
 import { AuthUser, User } from '@app/iam'
@@ -8,6 +16,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter'
 import { NotifyMessageSent } from '../../use-cases'
 import { SSEMessageNotifier } from '../message-notifiers/sse-message-notifier'
 import { MessageSentEvent } from '@app/chat/write/domain/message/message.events'
+import { GetMessagesFromUserQuery } from '../../queries'
 
 @Controller('messages')
 @ApiTags('Chat')
@@ -15,15 +24,17 @@ import { MessageSentEvent } from '@app/chat/write/domain/message/message.events'
 export class ReadChatController {
     constructor(
         private eventBus: EventEmitter2,
-        private notifyMessageSent: NotifyMessageSent
+        private notifyMessageSent: NotifyMessageSent,
+        @Inject(GetMessagesFromUserQuery)
+        private getMessagesFromUserQuery: GetMessagesFromUserQuery
     ) {}
 
-    @Get('/:userId')
+    @Get(':userId')
     async getMessagesWithUser(
-        @Param() params: GetMessagesWithUserParam,
-        @User() user: AuthUser
+        @User() user: AuthUser,
+        @Param() params: GetMessagesWithUserParam
     ) {
-        return []
+        return this.getMessagesFromUserQuery.execute(user.id, params.userId)
     }
 
     @Sse('')

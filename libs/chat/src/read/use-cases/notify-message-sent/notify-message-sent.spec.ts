@@ -25,7 +25,7 @@ describe('Feature: Notify receiver of message sent', () => {
             id: 'message-id',
             emitterId: 'emitter-id',
             content: 'Hello',
-            sentAt: new Date('2021-01-01'),
+            sendAt: new Date('2021-01-01'),
         })
     })
 })

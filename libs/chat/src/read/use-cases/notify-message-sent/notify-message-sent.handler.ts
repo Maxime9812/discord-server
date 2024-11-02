@@ -20,7 +20,7 @@ export class NotifyMessageSent {
                 id: event.payload.id,
                 emitterId: event.payload.emitterId,
                 content: event.payload.content,
-                sentAt: event.payload.sendAt,
+                sendAt: event.payload.sendAt,
             })
         }
     }
