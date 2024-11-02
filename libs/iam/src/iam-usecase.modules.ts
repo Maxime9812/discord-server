@@ -1,12 +1,15 @@
 import { Module } from '@nestjs/common'
 import { IAMDependenciesModule } from './iam-dependencies.module'
 import { LoginHandler, LogoutHandler, RegisterHandler } from './use-cases'
-import { CommandBus } from '@app/shared'
+import { CommandBus, DatabaseModule, SqlConnection } from '@app/shared'
 import { AuthProvider, UserRepository } from './gateways'
 import { DateProvider, IdProvider, PasswordHasher } from './domain'
+import { Knex } from 'knex'
+import { knexGetMeQuery } from './infra'
+import { GetMeQuery } from './queries'
 
 @Module({
-    imports: [IAMDependenciesModule],
+    imports: [IAMDependenciesModule, DatabaseModule],
     providers: [
         {
             provide: RegisterHandler,
@@ -55,7 +58,14 @@ import { DateProvider, IdProvider, PasswordHasher } from './domain'
                 return new LogoutHandler(authProvider)
             },
         },
+        {
+            provide: GetMeQuery,
+            inject: [SqlConnection],
+            useFactory: (knex: Knex) => {
+                return new knexGetMeQuery(knex)
+            },
+        },
     ],
-    exports: [RegisterHandler, LoginHandler, LogoutHandler],
+    exports: [RegisterHandler, LoginHandler, LogoutHandler, GetMeQuery],
 })
 export class IAMUseCaseModule {}

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common'
+import { Body, Controller, Get, Inject, Post, Res } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { LoginBody, RegisterBody } from '../body'
 import {
@@ -8,6 +8,9 @@ import {
 } from '@app/iam/use-cases'
 import { Public } from '../metadata'
 import { Response } from 'express'
+import { GetMeQuery } from '@app/iam/queries'
+import { AuthUser } from '@app/iam/gateways'
+import { User } from '../decorators'
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -15,7 +18,9 @@ export class AuthController {
     constructor(
         private loginHandler: LoginHandler,
         private registerHandler: RegisterHandler,
-        private logoutHandler: LogoutHandler
+        private logoutHandler: LogoutHandler,
+        @Inject(GetMeQuery)
+        private getMeQuery: GetMeQuery
     ) {}
 
     @Public()
@@ -39,7 +44,7 @@ export class AuthController {
     }
 
     @Get('me')
-    async me() {
-        return
+    async me(@User() user: AuthUser) {
+        return this.getMeQuery.execute(user.id)
     }
 }

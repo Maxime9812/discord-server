@@ -16,12 +16,12 @@ import { EventEmitter2 } from '@nestjs/event-emitter'
 import { NotifyMessageSent } from '../../use-cases'
 import { SSEMessageNotifier } from '../message-notifiers/sse-message-notifier'
 import { MessageSentEvent } from '@app/chat/write/domain/message/message.events'
-import { GetMessagesFromUserQuery } from '../../queries'
+import { GetChatsQuery, GetMessagesFromUserQuery } from '../../queries'
 
 @Controller('messages')
 @ApiTags('Chat')
 @ApiCookieAuth()
-export class ReadChatController {
+export class ReadMessagesController {
     constructor(
         private eventBus: EventEmitter2,
         private notifyMessageSent: NotifyMessageSent,
