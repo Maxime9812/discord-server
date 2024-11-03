@@ -7,6 +7,6 @@ export class SSEMessageNotifier implements MessageNotifier {
     constructor(private subject: Subject<MessageEvent>) {}
 
     async notify(message: Message): Promise<void> {
-        this.subject.next({ data: message })
+        this.subject.next({ type: 'message-received', data: message })
     }
 }

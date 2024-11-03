@@ -1,3 +1,4 @@
+import { DomainEvent, StubEventBus } from '@app/shared'
 import { DeterministicDateProvider, UserSocial } from '../../domain'
 import { InMemoryUserSocialRepository } from '../../infra'
 import {
@@ -12,9 +13,11 @@ import {
 export const createUserSocialFixture = () => {
     const userSocialRepository = new InMemoryUserSocialRepository()
     const dateProvider = new DeterministicDateProvider()
+    const eventBus = new StubEventBus()
     const sendFriendRequestHandler = new SendFriendRequestHandler(
         userSocialRepository,
-        dateProvider
+        dateProvider,
+        eventBus
     )
     const acceptedFriendRequestHandler = new AcceptFriendRequestHandler(
         userSocialRepository,
@@ -50,6 +53,9 @@ export const createUserSocialFixture = () => {
         },
         thenErrorShouldBe(expectedError: Error) {
             expect(error).toEqual(expectedError)
+        },
+        thenEventShouldBeEmitted(event: DomainEvent<any>) {
+            expect(eventBus.emittedEvent).toEqual(event)
         },
     }
 }

@@ -15,13 +15,13 @@ export class NotifyMessageSent {
         userId,
         notifier,
     }: NotifyMessageSentPayload): Promise<void> {
-        if (event.payload.receiverId === userId) {
-            await notifier.notify({
-                id: event.payload.id,
-                emitterId: event.payload.emitterId,
-                content: event.payload.content,
-                sendAt: event.payload.sendAt,
-            })
-        }
+        if (event.payload.receiverId != userId) return
+
+        await notifier.notify({
+            id: event.payload.id,
+            emitterId: event.payload.emitterId,
+            content: event.payload.content,
+            sendAt: event.payload.sendAt,
+        })
     }
 }

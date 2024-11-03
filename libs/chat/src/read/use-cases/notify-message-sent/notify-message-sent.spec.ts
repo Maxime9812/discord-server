@@ -28,4 +28,25 @@ describe('Feature: Notify receiver of message sent', () => {
             sendAt: new Date('2021-01-01'),
         })
     })
+
+    test('User is not notified when message is sent to another user', async () => {
+        const usecase = new NotifyMessageSent()
+        const notifier = new StubMessageNotifier()
+
+        const message = {
+            id: 'message-id',
+            receiverId: 'another-receiver-id',
+            emitterId: 'emitter-id',
+            content: 'Hello',
+            sendAt: new Date('2021-01-01'),
+        }
+
+        await usecase.execute({
+            event: new MessageSentEvent(message),
+            userId: 'receiver-id',
+            notifier,
+        })
+
+        expect(notifier.lastMessage).toBeUndefined()
+    })
 })

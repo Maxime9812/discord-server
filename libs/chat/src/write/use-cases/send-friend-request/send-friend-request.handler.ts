@@ -1,9 +1,13 @@
-import { CommandHandler } from '@app/shared'
+import { CommandHandler, EventBus } from '@app/shared'
 import {
     SendFriendRequestCommand,
     SendFriendRequestPaylaod,
 } from './send-friend-request.command'
-import { DateProvider, UserSocialNotFoundError } from '../../domain'
+import {
+    DateProvider,
+    FriendRequestSentEvent,
+    UserSocialNotFoundError,
+} from '../../domain'
 import { UserSocialRepository } from '../../gateways'
 
 export class SendFriendRequestHandler
@@ -11,7 +15,8 @@ export class SendFriendRequestHandler
 {
     constructor(
         private userSocialRepository: UserSocialRepository,
-        private dateProvider: DateProvider
+        private dateProvider: DateProvider,
+        private eventBus: EventBus
     ) {}
 
     async handle(command: SendFriendRequestPaylaod): Promise<void> {
@@ -24,6 +29,14 @@ export class SendFriendRequestHandler
         })
 
         await this.userSocialRepository.save(sender)
+        this.eventBus.emit(
+            new FriendRequestSentEvent({
+                id: command.requestId,
+                senderId: command.senderId,
+                receiverId: command.receiverId,
+                requestedAt: this.dateProvider.getNow(),
+            })
+        )
     }
 
     private async getUserSocial(id: string) {

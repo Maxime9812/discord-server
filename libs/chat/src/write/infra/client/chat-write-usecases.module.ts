@@ -54,14 +54,16 @@ import { EventBus } from '@app/shared'
         },
         {
             provide: SendFriendRequestHandler,
-            inject: [UserSocialRepository, DateProvider],
+            inject: [UserSocialRepository, DateProvider, EventBus],
             useFactory(
                 userSocialRepository: UserSocialRepository,
-                DateProvider: DateProvider
+                DateProvider: DateProvider,
+                eventBus: EventBus
             ) {
                 return new SendFriendRequestHandler(
                     userSocialRepository,
-                    DateProvider
+                    DateProvider,
+                    eventBus
                 )
             },
         },

@@ -6,6 +6,7 @@ import {
     UserSocialFixture,
 } from '../../__tests__'
 import {
+    FriendRequestSentEvent,
     UserSocialAlreadyFriendsError,
     UserSocialAlreadyRequestedError,
     UserSocialNotFoundError,
@@ -139,5 +140,24 @@ describe('Feature: Send friend request', () => {
         })
 
         fixture.thenErrorShouldBe(new UserSocialNotFoundError(WILLIAM.id))
+    })
+
+    test('Emit event when friend request is sent', async () => {
+        fixture.givenUserSocials([MAXIME, WILLIAM])
+
+        await fixture.whenSendFriendRequest({
+            requestId: '1234',
+            senderId: MAXIME.id,
+            receiverId: WILLIAM.id,
+        })
+
+        fixture.thenEventShouldBeEmitted(
+            new FriendRequestSentEvent({
+                id: '1234',
+                senderId: MAXIME.id,
+                receiverId: WILLIAM.id,
+                requestedAt: NOW,
+            })
+        )
     })
 })
