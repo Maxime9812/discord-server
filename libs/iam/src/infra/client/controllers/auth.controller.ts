@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Inject, Post, Res } from '@nestjs/common'
+import {
+    Body,
+    ConflictException,
+    Controller,
+    ForbiddenException,
+    Get,
+    Inject,
+    Post,
+    Res,
+} from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { LoginBody, RegisterBody } from '../body'
 import {
@@ -11,6 +20,11 @@ import { Response } from 'express'
 import { GetMeQuery } from '@app/iam/queries'
 import { AuthUser } from '@app/iam/gateways'
 import { User } from '../decorators'
+import {
+    UsernameAlreadyExistsError,
+    UserNotFoundError,
+    UserPasswordDoesNotMatchError,
+} from '@app/iam/domain'
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -26,7 +40,16 @@ export class AuthController {
     @Public()
     @Post('login')
     async login(@Body() body: LoginBody) {
-        await this.loginHandler.handle(body)
+        try {
+            await this.loginHandler.handle(body)
+        } catch (error) {
+            if (error instanceof UserPasswordDoesNotMatchError)
+                throw new ForbiddenException()
+            if (error instanceof UserNotFoundError)
+                throw new ForbiddenException()
+
+            throw error
+        }
     }
 
     @Public()
@@ -40,7 +63,14 @@ export class AuthController {
     @Public()
     @Post('register')
     async register(@Body() body: RegisterBody) {
-        await this.registerHandler.handle(body)
+        try {
+            await this.registerHandler.handle(body)
+        } catch (error) {
+            if (error instanceof UsernameAlreadyExistsError)
+                throw new ConflictException(error.message)
+
+            throw error
+        }
     }
 
     @Get('me')
