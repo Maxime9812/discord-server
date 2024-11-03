@@ -29,14 +29,7 @@ export class SendFriendRequestHandler
         })
 
         await this.userSocialRepository.save(sender)
-        this.eventBus.emit(
-            new FriendRequestSentEvent({
-                id: command.requestId,
-                senderId: command.senderId,
-                receiverId: command.receiverId,
-                requestedAt: this.dateProvider.getNow(),
-            })
-        )
+        sender.getDomainEvents().forEach((event) => this.eventBus.emit(event))
     }
 
     private async getUserSocial(id: string) {

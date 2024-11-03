@@ -6,6 +6,7 @@ import {
     UserSocialFixture,
 } from '../../__tests__'
 import {
+    FriendRequestAcceptedEvent,
     UserSocialFriendRequestNotFound,
     UserSocialNotFoundError,
 } from '../../domain'
@@ -70,6 +71,30 @@ describe('Feature: Accept friend request', () => {
 
         fixture.thenErrorShouldBe(
             new UserSocialNotFoundError('unknown-user-id')
+        )
+    })
+
+    test('Emit friend request accepted event', async () => {
+        const friendRequest = friendRequestBuilder()
+            .withId('1')
+            .withSenderId(WILLIAM.id)
+            .build()
+
+        const user = userSocialBuilder(MAXIME.snapshot)
+            .withFriendRequest(friendRequest)
+            .build()
+        fixture.givenUserSocials([user])
+
+        await fixture.whenAcceptFriendRequest({
+            requestId: friendRequest.id,
+            userId: MAXIME.id,
+        })
+
+        fixture.thenEventShouldBeEmitted(
+            new FriendRequestAcceptedEvent({
+                senderId: WILLIAM.id,
+                receiverId: MAXIME.id,
+            })
         )
     })
 })

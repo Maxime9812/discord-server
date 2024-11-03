@@ -2,11 +2,16 @@ import { FriendRequest } from '../../domain'
 import { FriendRequestNotifier } from '../../gateways'
 
 export class StubFriendRequestNotifier implements FriendRequestNotifier {
-    lastNotification: FriendRequest
+    lastFriendRequestReceived: FriendRequest
+    lastFriendRequestAccepted: string
 
     async notifyFriendRequestReceived(
         friendRequest: FriendRequest
     ): Promise<void> {
-        this.lastNotification = friendRequest
+        this.lastFriendRequestReceived = friendRequest
+    }
+
+    async notifyFriendRequestAccepted(userId: string): Promise<void> {
+        this.lastFriendRequestAccepted = userId
     }
 }

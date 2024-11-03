@@ -21,7 +21,8 @@ export const createUserSocialFixture = () => {
     )
     const acceptedFriendRequestHandler = new AcceptFriendRequestHandler(
         userSocialRepository,
-        dateProvider
+        dateProvider,
+        eventBus
     )
     let error: Error
 

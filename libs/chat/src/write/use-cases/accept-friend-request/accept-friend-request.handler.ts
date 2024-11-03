@@ -1,4 +1,4 @@
-import { CommandHandler } from '@app/shared'
+import { CommandHandler, EventBus } from '@app/shared'
 import {
     AcceptFriendRequestCommand,
     AcceptFriendRequestPayload,
@@ -11,7 +11,8 @@ export class AcceptFriendRequestHandler
 {
     constructor(
         private userSocialRepository: UserSocialRepository,
-        private dateProvider: DateProvider
+        private dateProvider: DateProvider,
+        private eventBus: EventBus
     ) {}
 
     async handle(command: AcceptFriendRequestPayload): Promise<void> {
@@ -20,6 +21,7 @@ export class AcceptFriendRequestHandler
         user.acceptFriendRequest(command.requestId, this.dateProvider.getNow())
 
         await this.userSocialRepository.save(user)
+        user.getDomainEvents().forEach((event) => this.eventBus.emit(event))
     }
 
     private async getUserSocial(userId: string) {

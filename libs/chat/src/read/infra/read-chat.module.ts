@@ -4,7 +4,10 @@ import {
     ReadMessagesController,
     ReadSocialController,
 } from './controllers'
-import { NotifyMessageSent } from '../use-cases'
+import {
+    NotifyFriendRequestAcceptedHandler,
+    NotifyMessageSent,
+} from '../use-cases'
 import {
     GetChatsQuery,
     GetFriendRequestsQuery,
@@ -34,6 +37,10 @@ import { NotifyFriendRequestReceivedHandler } from '../use-cases/notify-friend-r
         {
             provide: NotifyFriendRequestReceivedHandler,
             useClass: NotifyFriendRequestReceivedHandler,
+        },
+        {
+            provide: NotifyFriendRequestAcceptedHandler,
+            useClass: NotifyFriendRequestAcceptedHandler,
         },
         {
             provide: GetMessagesFromUserQuery,

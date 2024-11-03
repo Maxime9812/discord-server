@@ -28,16 +28,7 @@ export class SendDirectMessageHandler
         })
 
         await this.messageRepository.save(message)
-        const snapshot = message.snapshot
-        this.eventBus.emit(
-            new MessageSentEvent({
-                id: snapshot.id,
-                emitterId: snapshot.emitterId,
-                receiverId: snapshot.receiverId,
-                content: snapshot.content,
-                sendAt: snapshot.sendAt,
-            })
-        )
+        chatter.getDomainEvents().forEach((event) => this.eventBus.emit(event))
     }
 
     private async getChatter(chatterId: string) {

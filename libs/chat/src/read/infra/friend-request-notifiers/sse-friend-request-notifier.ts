@@ -14,4 +14,11 @@ export class SSEFriendRequestNotifier implements FriendRequestNotifier {
             data: friendRequest,
         })
     }
+
+    async notifyFriendRequestAccepted(userId: string): Promise<void> {
+        this.subject.next({
+            type: 'friend-request-accepted',
+            data: { userId },
+        })
+    }
 }

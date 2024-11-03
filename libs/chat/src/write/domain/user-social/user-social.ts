@@ -1,4 +1,9 @@
-import { FriendRequest } from '../friend-request'
+import { Aggregate } from '@app/shared'
+import {
+    FriendRequest,
+    FriendRequestAcceptedEvent,
+    FriendRequestSentEvent,
+} from '../friend-request'
 import { Friendship } from './friendship'
 import {
     UserSocialAlreadyFriendsError,
@@ -14,9 +19,7 @@ type UserSocialProps = {
 
 export type UserSocialSnapshot = UserSocial['snapshot']
 
-export class UserSocial {
-    private constructor(private props: UserSocialProps) {}
-
+export class UserSocial extends Aggregate<UserSocialProps> {
     get id() {
         return this.props.id
     }
@@ -88,6 +91,14 @@ export class UserSocial {
         })
 
         this.props.friendRequests.push(request)
+        this.emitEvent(
+            new FriendRequestSentEvent({
+                id,
+                senderId: this.id,
+                receiverId: receiver.id,
+                requestedAt: currentDate,
+            })
+        )
     }
 
     acceptFriendRequest(requestId: string, currentDate: Date) {
@@ -101,6 +112,12 @@ export class UserSocial {
 
         const friendship = request.accept(currentDate)
         this.props.friends.push(friendship)
+        this.emitEvent(
+            new FriendRequestAcceptedEvent({
+                senderId: request.senderId,
+                receiverId: this.id,
+            })
+        )
     }
 
     static fromSnapshot(snapshot: UserSocialSnapshot) {

@@ -1,6 +1,8 @@
+import { Aggregate } from '@app/shared'
 import { FriendRequest } from '../friend-request'
 import { Message } from '../message'
 import { ChatterNotFriendWithReceiverError } from './chatter.errors'
+import { MessageSentEvent } from '../message/message.events'
 
 type ChatterProps = {
     id: string
@@ -15,9 +17,7 @@ type WriteMessage = {
 
 export type ChatterSnapshot = Chatter['snapshot']
 
-export class Chatter {
-    private constructor(private props: ChatterProps) {}
-
+export class Chatter extends Aggregate<ChatterProps> {
     get id() {
         return this.props.id
     }
@@ -38,13 +38,25 @@ export class Chatter {
             throw new ChatterNotFriendWithReceiverError()
         }
 
-        return Message.create({
+        const message = Message.create({
             id,
             receiverId: receiver.id,
             emitterId: this.id,
             content,
             currentDate,
         })
+
+        this.emitEvent(
+            new MessageSentEvent({
+                id: message.id,
+                emitterId: this.id,
+                receiverId: receiver.id,
+                content,
+                sendAt: currentDate,
+            })
+        )
+
+        return message
     }
 
     requestToBeFriendWith(

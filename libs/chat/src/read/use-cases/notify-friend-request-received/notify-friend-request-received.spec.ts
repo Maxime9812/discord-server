@@ -1,13 +1,17 @@
 import { FriendRequestSentEvent } from '@app/chat/write/domain'
 import { StubFriendRequestNotifier } from '../../infra'
 import { NotifyFriendRequestReceivedHandler } from './notify-friend-request-received.handler'
+import { createFixture, Fixture } from '../../__tests__'
 
 describe('Feature: Notify Friend Request Received', () => {
-    test('User is notified when friend request is received', async () => {
-        const notifier = new StubFriendRequestNotifier()
-        const usecase = new NotifyFriendRequestReceivedHandler()
+    let fixture: Fixture
 
-        await usecase.execute({
+    beforeEach(() => {
+        fixture = createFixture()
+    })
+
+    test('User is notified when friend request is received', async () => {
+        await fixture.whenNotifyFriendRequestReceived({
             event: new FriendRequestSentEvent({
                 id: 'request-id',
                 receiverId: 'receiver-id',
@@ -15,10 +19,9 @@ describe('Feature: Notify Friend Request Received', () => {
                 requestedAt: new Date('2021-01-01'),
             }),
             userId: 'receiver-id',
-            notifier,
         })
 
-        expect(notifier.lastNotification).toEqual({
+        fixture.thenLastFriendRequestReceivedShouldBe({
             id: 'request-id',
             senderId: 'sender-id',
             requestedAt: new Date('2021-01-01'),
@@ -26,10 +29,7 @@ describe('Feature: Notify Friend Request Received', () => {
     })
 
     test('User is not notified when friend request is received by another user', async () => {
-        const notifier = new StubFriendRequestNotifier()
-        const usecase = new NotifyFriendRequestReceivedHandler()
-
-        await usecase.execute({
+        await fixture.whenNotifyFriendRequestReceived({
             event: new FriendRequestSentEvent({
                 id: 'request-id',
                 receiverId: 'another-receiver-id',
@@ -37,10 +37,8 @@ describe('Feature: Notify Friend Request Received', () => {
                 requestedAt: new Date('2021-01-01'),
             }),
             userId: 'receiver-id',
-            notifier,
         })
 
-        expect(notifier.lastNotification).toBeUndefined()
+        fixture.thenLastFriendRequestReceivedShouldBe(undefined)
     })
 })
-

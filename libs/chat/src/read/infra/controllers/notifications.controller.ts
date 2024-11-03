@@ -3,13 +3,17 @@ import { Controller, Sse, MessageEvent, Res } from '@nestjs/common'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { Subject } from 'rxjs'
 import {
+    NotifyFriendRequestAcceptedHandler,
     NotifyFriendRequestReceivedHandler,
     NotifyMessageSent,
 } from '../../use-cases'
 import { AuthUser, User } from '@app/iam'
 import { Response } from 'express'
 import { SSEMessageNotifier } from '../message-notifiers'
-import { FriendRequestSentEvent } from '@app/chat/write/domain'
+import {
+    FriendRequestAcceptedEvent,
+    FriendRequestSentEvent,
+} from '@app/chat/write/domain'
 import { SSEFriendRequestNotifier } from '../friend-request-notifiers/sse-friend-request-notifier'
 
 @Controller('notifications')
@@ -17,23 +21,24 @@ export class NotificationsController {
     constructor(
         private eventBus: EventEmitter2,
         private notifyMessageSent: NotifyMessageSent,
-        private notifyFriendRequestSent: NotifyFriendRequestReceivedHandler
+        private notifyFriendRequestSent: NotifyFriendRequestReceivedHandler,
+        private notifyFriendRequestAccepted: NotifyFriendRequestAcceptedHandler
     ) {}
 
     @Sse('')
     async notify(@User() user: AuthUser, @Res() res: Response) {
         const subject = new Subject<MessageEvent>()
-        const removeMessageSentListener = this.handleMessageSentEvent(
-            subject,
-            user.id
-        )
 
-        const removeFriendRequestSentListener =
-            this.handleFriendRequestSentEvent(subject, user.id)
+        const listenerRemoveCallbacks = [
+            this.handleMessageSentEvent(subject, user.id),
+            this.handleFriendRequestSentEvent(subject, user.id),
+            this.handleFriendRequestAcceptedEvent(subject, user.id),
+        ]
 
         res.once('close', () => {
-            removeMessageSentListener()
-            removeFriendRequestSentListener()
+            listenerRemoveCallbacks.forEach((removeCallback) =>
+                removeCallback()
+            )
         })
 
         return subject
@@ -74,6 +79,25 @@ export class NotificationsController {
 
         return () => {
             this.eventBus.off(FriendRequestSentEvent.name, listener)
+        }
+    }
+
+    private handleFriendRequestAcceptedEvent(
+        subject: Subject<MessageEvent>,
+        userId: string
+    ) {
+        const listener = async (event: FriendRequestAcceptedEvent) => {
+            await this.notifyFriendRequestAccepted.execute({
+                event,
+                userId,
+                notifier: new SSEFriendRequestNotifier(subject),
+            })
+        }
+
+        this.eventBus.on(FriendRequestAcceptedEvent.name, listener)
+
+        return () => {
+            this.eventBus.off(FriendRequestAcceptedEvent.name, listener)
         }
     }
 }

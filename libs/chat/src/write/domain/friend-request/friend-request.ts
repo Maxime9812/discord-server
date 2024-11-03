@@ -23,6 +23,10 @@ export class FriendRequest {
         return this.props.id
     }
 
+    get senderId() {
+        return this.props.senderId
+    }
+
     isFor(receiverId: string) {
         return this.props.receiverId === receiverId
     }
