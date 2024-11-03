@@ -89,5 +89,6 @@
             "^@app/iam(|/.*)$": "<rootDir>/libs/iam/src/$1",
             "^@app/chat(|/.*)$": "<rootDir>/libs/chat/src/$1"
         }
-    }
+    },
+    "packageManager": "yarn@4.5.1"
 }
