@@ -2,11 +2,13 @@ FROM node:22-alpine As build
 
 WORKDIR /usr/src/app
 
-COPY --chown=node:node package*.json ./
-
-RUN yarn install --prod --frozen-lockfile
-
 COPY --chown=node:node . .
+
+RUN yarn set version stable
+
+RUN yarn cache clean
+
+RUN yarn install
 
 RUN yarn build
 
