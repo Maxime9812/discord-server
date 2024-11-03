@@ -9,7 +9,11 @@ export const SqlConnection = Symbol('SqlConnection')
         {
             provide: SqlConnection,
             useFactory() {
-                return knex(knexConfig.development)
+                return knex(
+                    process.env.NODE_ENV == 'production'
+                        ? knexConfig.production
+                        : knexConfig.development
+                )
             },
         },
     ],

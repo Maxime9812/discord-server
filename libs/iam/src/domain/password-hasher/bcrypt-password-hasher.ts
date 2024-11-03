@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcryptjs'
 import { PasswordHasher } from './password-hasher'
 
 export class BcryptPasswordHasher implements PasswordHasher {

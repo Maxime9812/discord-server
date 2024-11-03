@@ -1,0 +1,48 @@
+version: '3.3'
+services:
+  migration:
+    build:
+      context: .
+      dockerfile: migration.Dockerfile
+    networks:
+      - app_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+  server:
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    networks:
+      - app_net
+    depends_on:
+      migration:
+        condition: service_completed_successfully
+
+  postgres:
+    image: 'postgres:13.2'
+    ports:
+      - "5432:5432"
+    networks:
+      - app_net
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: discord
+    volumes:
+      - ./docker-postgresql-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+
+  redis:
+    image: 'redis:6.2.1'
+    ports:
+      - "6379:6379"
+    networks:
+      - app_net
+
+networks:
+  app_net:
+    driver: bridge

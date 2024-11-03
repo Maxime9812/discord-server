@@ -22,7 +22,7 @@ const knexConfig: Record<'development' | 'production' | 'test', Knex.Config> = {
     production: {
         client: 'postgresql',
         connection: {
-            host: '127.0.0.1',
+            host: 'postgres',
             database: 'discord',
             user: 'postgres',
             password: 'secret',
