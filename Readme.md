@@ -6,6 +6,8 @@ lien vers la doc de l'api: [http://localhost:3000/doc](http://localhost:3000/doc
 
 La route /notifications permet de recevoir des notifications en temps réel.
 
+Le serveur utilies le principe de SSE (Server Sent Events) pour envoyer des notifications en temps réel.
+
 le serveur envoie 3 evenements:
 - `friend-request-received` : lorsqu'une demande d'ami est reçue
 ``` typescript
@@ -36,3 +38,25 @@ le serveur envoie 3 evenements:
     }
 }
 ```
+
+Pour ecouter les notifications, il suffit de se connecter à la route /notifications avec un client SSE.
+
+Exemple en typescript:
+``` typescript
+// withCredentials permet de transmettre les cookies
+const eventSource = new EventSource('http://localhost:3000/notifications', { withCredentials: true });
+
+eventSource.addEventListener = ('message-received', event) => {
+    const data = JSON.parse(event.data);
+    console.log(data);
+}
+
+eventSource.addEventListener = ('friend-request-received', event) => {
+    const data = JSON.parse(event.data);
+    console.log(data);
+}
+
+// pour fermer la connexion
+eventSource.close()
+```
+
