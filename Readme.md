@@ -1,6 +1,8 @@
-##Discord server
+# Discord server
 
-### Notifications en temps réel
+lien vers la doc de l'api: [http://localhost:3000/doc](http://localhost:3000/doc)
+
+## Notifications en temps réel
 
 La route /notifications permet de recevoir des notifications en temps réel.
 
