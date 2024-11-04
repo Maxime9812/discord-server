@@ -15,7 +15,8 @@
         "test:it": "jest --runInBand --config test/jest-integration.json",
         "knex": "knex --knexfile=\"libs/shared/src/database/knexfile.ts\"",
         "db:prod": "yarn knex migrate:latest --env production",
-        "docker:prod": "docker-compose -f ./docker-compose-prod.yaml up"
+        "docker:prod": "docker-compose -f ./docker-compose-prod.yaml up",
+        "docker:prod:build": "docker-compose -f ./docker-compose-prod.yaml up --build"
     },
     "dependencies": {
         "@nestjs/common": "^10.0.0",

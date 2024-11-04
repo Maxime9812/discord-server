@@ -15,8 +15,10 @@ import {
     FriendRequestSentEvent,
 } from '@app/chat/write/domain'
 import { SSEFriendRequestNotifier } from '../friend-request-notifiers/sse-friend-request-notifier'
+import { ApiTags } from '@nestjs/swagger'
 
 @Controller('notifications')
+@ApiTags('Notifications')
 export class NotificationsController {
     constructor(
         private eventBus: EventEmitter2,
