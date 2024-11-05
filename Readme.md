@@ -46,15 +46,15 @@ Exemple en typescript:
 // withCredentials permet de transmettre les cookies
 const eventSource = new EventSource('http://localhost:3000/notifications', { withCredentials: true });
 
-eventSource.addEventListener = ('message-received', event) => {
-    const data = JSON.parse(event.data);
-    console.log(data);
-}
+eventSource.addEventListener('message-received', (event) => {
+  const data = JSON.parse(event.data);
+  console.log(data);
+});
 
-eventSource.addEventListener = ('friend-request-received', event) => {
-    const data = JSON.parse(event.data);
-    console.log(data);
-}
+eventSource.addEventListener('friend-request-received', (event) => {
+  const data = JSON.parse(event.data);
+  console.log(data);
+});
 
 // pour fermer la connexion
 eventSource.close()
