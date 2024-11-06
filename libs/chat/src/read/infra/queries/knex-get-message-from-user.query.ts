@@ -10,6 +10,7 @@ export class KnexGetMessagesFromUserQuery implements GetMessagesFromUserQuery {
             .select(
                 'id',
                 'emitter_id as emitterId',
+                'receiver_id as receiverId',
                 'content',
                 'send_at as sendAt'
             )

@@ -50,6 +50,7 @@ describe('KnexGetMessagesFromUserQuery', () => {
                 {
                     id: '8938b848-a93e-4a08-af22-39da8bca7723',
                     emitterId: USER_ID_1,
+                    receiverId: USER_ID_2,
                     content: 'message 1',
                     sendAt: new Date('2024-01-01'),
                 },
@@ -73,6 +74,7 @@ describe('KnexGetMessagesFromUserQuery', () => {
                 {
                     id: '8938b848-a93e-4a08-af22-39da8bca7723',
                     emitterId: USER_ID_2,
+                    receiverId: USER_ID_1,
                     content: 'message 1',
                     sendAt: new Date('2024-01-01'),
                 },
@@ -104,12 +106,14 @@ describe('KnexGetMessagesFromUserQuery', () => {
                 {
                     id: '8938b848-a93e-4a08-af22-39da8bca7724',
                     emitterId: USER_ID_2,
+                    receiverId: USER_ID_1,
                     content: 'message 2',
                     sendAt: new Date('2024-01-02'),
                 },
                 {
                     id: '8938b848-a93e-4a08-af22-39da8bca7723',
                     emitterId: USER_ID_1,
+                    receiverId: USER_ID_2,
                     content: 'message 1',
                     sendAt: new Date('2024-01-01'),
                 },
@@ -149,6 +153,7 @@ describe('KnexGetMessagesFromUserQuery', () => {
                 {
                     id: '8938b848-a93e-4a08-af22-39da8bca7723',
                     emitterId: USER_ID_2,
+                    receiverId: USER_ID_1,
                     content: 'message 1',
                     sendAt: new Date('2024-01-01'),
                 },
