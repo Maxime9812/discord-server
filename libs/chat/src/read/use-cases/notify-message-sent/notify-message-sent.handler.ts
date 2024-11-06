@@ -20,6 +20,7 @@ export class NotifyMessageSent {
         await notifier.notify({
             id: event.payload.id,
             emitterId: event.payload.emitterId,
+            receiverId: event.payload.receiverId,
             content: event.payload.content,
             sendAt: event.payload.sendAt,
         })

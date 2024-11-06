@@ -24,6 +24,7 @@ describe('Feature: Notify receiver of message sent', () => {
         expect(notifier.lastMessage).toEqual({
             id: 'message-id',
             emitterId: 'emitter-id',
+            receiverId: 'receiver-id',
             content: 'Hello',
             sendAt: new Date('2021-01-01'),
         })
