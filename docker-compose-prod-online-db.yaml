@@ -1,0 +1,40 @@
+version: '3.3'
+services:
+  migration:
+    build:
+      context: .
+      dockerfile: migration.Dockerfile
+    networks:
+      - app_net
+    environment:
+      # Replace these with your online database credentials
+      DATABASE_HOST: "db.ezhost-edu.dev"
+      DATABASE_PORT: "0000"
+      DATABASE_USER: "user"
+      DATABASE_PASSWORD: "password"
+      DATABASE_NAME: "database name"
+    depends_on:
+      redis:
+        condition: service_started
+
+  server:
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    networks:
+      - app_net
+    depends_on:
+      migration:
+        condition: service_completed_successfully
+
+  redis:
+    image: 'redis:6.2.1'
+    ports:
+      - "6379:6379"
+    networks:
+      - app_net
+
+networks:
+  app_net:
+    driver: bridge

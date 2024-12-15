@@ -22,6 +22,7 @@ const knexConfig: Record<'development' | 'production' | 'test', Knex.Config> = {
     production: {
         client: 'postgresql',
         connection: {
+            // REPLACE WITH YOUR ONLINE DATABASE CREDENTIALS HERE
             host: 'postgres',
             database: 'discord',
             user: 'postgres',
