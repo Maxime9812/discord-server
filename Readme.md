@@ -60,3 +60,20 @@ eventSource.addEventListener('friend-request-received', (event) => {
 eventSource.close()
 ```
 
+## Run with online database
+
+You need to set the environments variables in `docker-compose-prod-online-db.yml` file like this :
+```yaml
+environment:
+    # ! Replace these with your online database credentials
+    DATABASE_HOST: "db.ezhost-edu.dev"
+    DATABASE_PORT: "0000"
+    DATABASE_USER: "user"
+    DATABASE_PASSWORD: "password"
+    DATABASE_NAME: "database name"
+```
+
+Then run the following command to start the server with the online database:
+```bash
+docker-compose -f docker-compose-prod-online-db.yaml up
+```
