@@ -159,6 +159,38 @@ describe('KnexGetMessagesFromUserQuery', () => {
                 },
             ])
         })
+
+        test('User deleted some messages', async () => {
+            await insertMessages([
+                {
+                    id: '8938b848-a93e-4a08-af22-39da8bca7723',
+                    emitter_id: USER_ID_2,
+                    receiver_id: USER_ID_1,
+                    content: 'message 1',
+                    send_at: new Date('2024-01-01'),
+                    deleted: false,
+                },
+                {
+                    id: '8938b848-a93e-4a08-af22-39da8bca7724',
+                    emitter_id: USER_ID_1,
+                    receiver_id: USER_ID_2,
+                    content: 'message 2',
+                    send_at: new Date('2024-01-02'),
+                    deleted: true,
+                },
+            ])
+            const messages = await query.execute(USER_ID_1, USER_ID_2)
+
+            expect(messages).toEqual<Message[]>([
+                {
+                    id: '8938b848-a93e-4a08-af22-39da8bca7723',
+                    emitterId: USER_ID_2,
+                    receiverId: USER_ID_1,
+                    content: 'message 1',
+                    sendAt: new Date('2024-01-01'),
+                },
+            ])
+        })
     })
 
     function insertMessages(message: MessagePm[]) {
