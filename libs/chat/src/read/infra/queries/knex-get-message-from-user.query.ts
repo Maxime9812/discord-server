@@ -14,10 +14,12 @@ export class KnexGetMessagesFromUserQuery implements GetMessagesFromUserQuery {
                 'content',
                 'send_at as sendAt'
             )
-            .where({ emitter_id: userId, deleted: false })
-            .andWhere('receiver_id', userId2)
-            .orWhere('emitter_id', userId2)
-            .andWhere('receiver_id', userId)
+            .where({ emitter_id: userId, receiver_id: userId2, deleted: false })
+            .orWhere({
+                emitter_id: userId2,
+                receiver_id: userId,
+                deleted: false,
+            })
             .orderBy('send_at', 'desc')
     }
 }

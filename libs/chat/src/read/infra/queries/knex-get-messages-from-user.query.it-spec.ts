@@ -178,6 +178,14 @@ describe('KnexGetMessagesFromUserQuery', () => {
                     send_at: new Date('2024-01-02'),
                     deleted: true,
                 },
+                {
+                    id: '8938b848-a93e-4a08-af22-39da8bca7725',
+                    emitter_id: USER_ID_2,
+                    receiver_id: USER_ID_1,
+                    content: 'message 3',
+                    send_at: new Date('2024-01-01'),
+                    deleted: true,
+                },
             ])
             const messages = await query.execute(USER_ID_1, USER_ID_2)
 
